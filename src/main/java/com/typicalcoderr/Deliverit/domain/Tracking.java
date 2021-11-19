@@ -1,6 +1,7 @@
-package com.typicalcoderr.Deliverit.Model;
+package com.typicalcoderr.Deliverit.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,19 +10,14 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "inquiry")
-public class Inquiry {
+@Builder
+@Entity(name = "tracking")
+public class Tracking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer inquiryId;
-    private String description;
+    private Integer trackingId;
+    private String shipmentStatus;
     @OneToOne
     @JoinColumn(name = "shipmentId", referencedColumnName = "shipmentId")
     private Shipment shipment;
-    @ManyToOne
-    @JoinColumn(name = "customerId", referencedColumnName = "username")
-    private User user;
-
-
-
 }
