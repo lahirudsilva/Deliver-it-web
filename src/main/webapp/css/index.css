@@ -68,3 +68,7 @@ body {
     background-color: #30a444;
     font-weight: bold;
 }
+
+.alert-message {
+    text-align: center;
+}
