@@ -11,10 +11,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,6 +37,7 @@ public class ShipmentService {
 
 
         User user = userRepository.findUserByEmail(getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
+
 
         Shipment shipments = new Shipment();
         shipments.setPickupLocation(dto.getPickupLocation());
@@ -62,5 +64,25 @@ public class ShipmentService {
         com.typicalcoderr.Deliverit.domain.User _user = userRepository.findUserByEmail(user.getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
 
         return _user.getEmail();
+    }
+
+
+    public List<ShipmentDto> getAllPendingRequests() {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy ").withZone(ZoneId.systemDefault());
+        List<ShipmentDto> list = new ArrayList<>();
+        for ( Shipment shipment :shipmentRepository.findAllByStatusIsLike("pending")){
+            ShipmentDto dto = new ShipmentDto();
+            dto.setShipmentId(shipment.getShipmentId());
+            dto.setSenderEmail(shipment.getUser().getEmail());
+            dto.setPickupLocation(shipment.getPickupLocation());
+            dto.setDropOffLocation(shipment.getDropOffLocation());
+            dto.setSize(shipment.getSize());
+            dto.setWeight(shipment.getWeight());
+            dto.setCreatedAt(DATE_TIME_FORMATTER.format(shipment.getCreatedAt()));
+            list.add(dto);
+        }
+        return list;
+
+
     }
 }

@@ -27,7 +27,6 @@ import java.text.DecimalFormat;
 public class ShipmentWebController {
 
     private final ShipmentService shipmentService;
-    private final CustomerService customerService;
 
 
     @GetMapping("/createPackage")
@@ -64,6 +63,21 @@ public class ShipmentWebController {
             mv.addObject("error", new APIException(e.getMessage()));
         }
         mv.setViewName("createPackageForm");
+        return mv;
+    }
+
+    @GetMapping("/requests")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView viewAllPendingRequests(){
+        return getPendingRequests();
+    }
+
+    //method to all the newly added pending requests from customers
+    private ModelAndView getPendingRequests(){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("adminHome");
+        mv.addObject("requests", shipmentService.getAllPendingRequests());
+
         return mv;
     }
 }

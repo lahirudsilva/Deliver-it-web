@@ -22,7 +22,7 @@ public class ShipmentDto {
     private Integer shipmentId;
     private String pickupLocation;
     private String dropOffLocation;
-//    private String senderEmail;
+    private String senderEmail;
     private String receiverEmail;
     private String receiverContactNumber;
     private LocalDate pickUpDate;
@@ -31,8 +31,10 @@ public class ShipmentDto {
     private String status;
     private Double weight;
     private Double estimatedPrice;
-    private Instant createdAt;
+    private String createdAt;
     private User user;
+
+
 
 
 }
