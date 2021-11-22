@@ -31,7 +31,7 @@
 
         <form method="POST" action="/add-package">
             <hr/>
-            <h6 class="card-subtitle mb-2 text-muted">User details</h6>
+            <h6 class="card-subtitle mb-2 text-muted"><strong>User details</strong></h6>
             <div class="form-group form-holder">
                 <label for="formGroupExampleInput1">Sender Address : </label>
                 <textarea class="form-control " id="formGroupExampleInput1" rows="3" placeholder="pickup location"
@@ -54,8 +54,9 @@
                        placeholder="Contact Number" name="receiverContactNumber" pattern="[0-9]{10}">
             </div>
             <hr/>
-            <h6 class="card-subtitle mb-2 text-muted">Package details</h6>
-            <div class="form-group form-holder">
+            <h6 class="card-subtitle mb-2 text-muted"><strong>Package details</strong></h6>
+            <div class="row g-3">
+            <div class="col-auto form-holder">
                 <label for="packageSize">Select package size</label>
                 <select class="form-control" id="packageSize" name="packageSize" required>
                     <option value="" selected disabled hidden>Choose...</option>
@@ -66,12 +67,13 @@
                 </select>
                 <small id="emailHelp" class="form-text text-muted">size = height x width x length</small>
             </div>
-            <div class="form-group form-holder">
+            <div class="col-auto form-holder">
                 <label for="packageWeight">Package Weight</label>
                 <input class="form-control" id="packageWeight" type="text" onkeyup="calculateCost()"
                        placeholder="Weight in kilograms"
                        name="packageWeight"
                        required>
+            </div>
             </div>
             <div class="form-group form-holder">
 
