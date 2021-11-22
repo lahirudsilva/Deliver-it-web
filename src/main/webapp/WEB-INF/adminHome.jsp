@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%@ include file="utils/header_imports.jsp" %>
     <link rel="stylesheet" type="text/css" href="../css/index.css"/>
-    <link rel="icon" href="../images/header_logo.png"/>
+    <link rel="icon" href="../images/logo.png"/>
     <title>Deliverit</title>
 </head>
 <body>
@@ -35,8 +35,47 @@
             Duis at tellus at urna condimentum mattis pellentesque.
         </p>
     </div>
+    <div class="card border-dark mb-3 recent-packages">
+        <h4 class="recent-packages-table">Pending Delivery Requests</h4>
+        <hr class="table-hr">
+        <!--if no pending here-->
+        <table id="example" class="table table-striped table-bordered " style="width:100%">
+            <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Pickup Location</th>
+                <th>Dropoff Location</th>
+                <th>Package Size</th>
+                <th>Requested On</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach var="requests" items="${pendingRequests}">
+                <tr>
+                    <td>${requests.getSenderEmail()}</td>
+                    <td>${requests.getPickupLocation()}</td>
+                    <td>${requests.getDropOffLocation()}</td>
+                    <td>${requests.getSize()} - ${requests.getWeight()}Kg</td>
+                    <td>${requests.getCreatedAt()}</td>
+                    <td>
+                        <a type="button" title="AcceptRequest" class="btn btn-outline-success btn-view" data-toggle="modal" data-target="#AssignDriverModal${requests.getShipmentId()}" >
+                            View
+                        </a>
+                    </td>
+
+                </tr>
+                <%@include file="../modals/assignDriver.jsp"%>
+            </c:forEach>
+
+            </tbody>
+        </table>
+
+    </div>
 </div>
 
 
 </body>
+<!--Footer-->
+<%@ include file="utils/footer.jsp" %>
 </html>
