@@ -1,6 +1,5 @@
 package com.typicalcoderr.Deliverit.Controller.web_controller;
 
-import com.typicalcoderr.Deliverit.Service.CustomerService;
 import com.typicalcoderr.Deliverit.Service.ShipmentService;
 import com.typicalcoderr.Deliverit.dto.ShipmentDto;
 import com.typicalcoderr.Deliverit.dto.SimpleMessageDto;
@@ -13,8 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.text.DecimalFormat;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +39,7 @@ public class ShipmentWebController {
 
     @PostMapping("/add-package")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ModelAndView addPackage(@RequestParam String senderAddress, String receiverAddress, String receiverEmail, String receiverContactNumber, String packageSize, Double packageWeight, double estimatedCost) {
+    public ModelAndView addPackage(@RequestParam String senderAddress, String receiverAddress, String receiverEmail, String receiverContactNumber, String packageSize, Double packageWeight, double estimatedCost, RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
         try {
 
@@ -56,13 +54,13 @@ public class ShipmentWebController {
 
 
             shipmentService.addShipment(dto);
-            mv.addObject("success", new SimpleMessageDto("Package request added Successfully!"));
+            redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Package request added Successfully!"));
 
 
         } catch (DeliveritException e) {
-            mv.addObject("error", new APIException(e.getMessage()));
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
         }
-        mv.setViewName("createPackageForm");
+        mv.setViewName("redirect:/createPackage");
         return mv;
     }
 
