@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +18,13 @@ public class Tracking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer trackingId;
     private String shipmentStatus;
-    @OneToOne
+    private Instant updatedAt;
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipmentId", referencedColumnName = "shipmentId")
     private Shipment shipment;
+    //driveid
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "driverId", referencedColumnName = "driverId")
+    private DriverDetails driverDetails;
+
 }
