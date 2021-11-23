@@ -35,7 +35,11 @@
             Duis at tellus at urna condimentum mattis pellentesque.
         </p>
     </div>
+
     <div class="card border-dark mb-3 recent-packages">
+        <%@include file="utils/successAlert.jsp" %>
+        <%@include file="utils/errorAlert.jsp" %>
+
         <h4 class="recent-packages-table">Pending Delivery Requests</h4>
         <hr class="table-hr">
         <!--if no pending here-->
@@ -52,6 +56,9 @@
             </thead>
             <tbody>
             <c:forEach var="requests" items="${pendingRequests}">
+                <c:url value = "#" var = "url">
+                    <c:param name = "shipmentId" value = "${requests.getShipmentId()}"/>
+                </c:url>
                 <tr>
                     <td>${requests.getSenderEmail()}</td>
                     <td>${requests.getPickupLocation()}</td>
@@ -59,13 +66,13 @@
                     <td>${requests.getSize()} - ${requests.getWeight()}Kg</td>
                     <td>${requests.getCreatedAt()}</td>
                     <td>
-                        <a type="button" title="AcceptRequest" class="btn btn-outline-success btn-view" data-toggle="modal" data-target="#AssignDriverModal${requests.getShipmentId()}" >
+                        <button type="button" title="Accept Request" class="btn btn-outline-success btn-view" data-bs-toggle="modal" data-bs-target="#AssignDriverModal${requests.getShipmentId()}" >
                             View
-                        </a>
+                        </button>
                     </td>
 
                 </tr>
-                <%@include file="../modals/assignDriver.jsp"%>
+                <%@include file="modals/assignDriver.jsp"%>
             </c:forEach>
 
             </tbody>
