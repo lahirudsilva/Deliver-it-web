@@ -13,9 +13,9 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link ${param.page == "home" ? "active" : null}" href="/">Home</a>
                 <a class="nav-item nav-link ${param.page == "shipments" ? "active" : null}"
-                   href="/students">Shipments</a>
+                   href="/shipments">Shipments</a>
                 <a class="nav-item nav-link ${param.page == "drivers" ? "active" : null}" href="/drivers">Drivers</a>
-                <a class="nav-item nav-link ${param.page == "customers" ? "active" : null}" href="/rooms">Customers</a>
+                <a class="nav-item nav-link ${param.page == "customers" ? "active" : null}" href="/customers">Customers</a>
             </div>
         </div>
         </sec:authorize>

@@ -72,3 +72,43 @@ body {
 .alert-message {
     text-align: center;
 }
+
+.recent-packages {
+    padding: 40px;
+    margin-top: 60px;
+    margin-bottom: 100px;
+}
+
+.recent-packages-table {
+    margin-top: 30px;
+}
+
+.drivers-list{
+    padding: 40px;
+    margin-top: 60px;
+    margin-bottom: 100px;
+}
+
+.title-add {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+.title-in-add {
+    width: 80%;
+}
+
+.btn-in-add {
+    width: 20%;
+}
+
+.btn-in-add:hover {
+    color: white !important;
+}
+
+.add-driver-btn{
+    margin-top: 20px;
+    margin-left: 530px;
+
+}

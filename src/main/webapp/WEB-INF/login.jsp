@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="../images/login-img.png"/>
     <%@ include file="utils/header_imports.jsp" %>
-    <link rel="stylesheet" type="text/css" href="css/index.css"/>
-    <title>DeliverIt</title>
+    <link rel="stylesheet" type="text/css" href="../css/index.css"/>
+    <link rel="icon" href="../images/header_logo.png"/>
+    <title>Deliverit</title>
 
 </head>
 <body>

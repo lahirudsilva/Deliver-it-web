@@ -49,9 +49,9 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">${customer.getFirstName()} ${customer.getLastName()} </h5>
                             <p class="card-text">${customer.getContactNumber()}</p>
-                            <a href="#" class="btn btn-primary">view details</a>
+                            <a href="#"  class="btn btn-outline-dark">view details</a>
                         </div>
-                        <div class="card-footer text-muted">
+                        <div class="card-footer text-muted text-center">
                             Registered On ${customer.getJoinedOn()}
                         </div>
                     </div>
