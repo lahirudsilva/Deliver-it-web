@@ -37,14 +37,73 @@
         </p>
     </div>
 
+    <div class="card border-dark mb-3 recent-packages">
+        <h4 class="recent-packages-table">Your recent Shipments</h4>
+        <hr class="table-hr">
+
+        <table id="example" class="table table-striped table-bordered " style="width:100%">
+            <thead>
+            <tr>
+                <th>Requested On</th>
+                <th>Pickup Date</th>
+                <th>Dropoff Date</th>
+                <th>Package Size</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach var="packages" items="${packageList}">
+                <tr>
+                    <td>${packages.getCreatedAt()}</td>
+                    <td>
+                    <c:choose>
+                        <c:when test="${packages.getPickUpDate() == null}">
+                            Not Confirmed
+                        </c:when>
+                        <c:otherwise>
+                            ${packages.getPickUpDate()}
+                        </c:otherwise>
+                    </c:choose>
+                    </td>
+                    <td>
+                    <c:choose>
+                        <c:when test="${packages.getDropOffDate() == null}">
+                            Not Confirmed
+                        </c:when>
+                        <c:otherwise>
+                            ${packages.getDropOffDate()}
+                        </c:otherwise>
+                    </c:choose>
+                    </td>
+                    <td>${packages.getSize()} - ${packages.getWeight()}Kg</td>
+                    <td>${packages.getStatus()}</td>
+
+                    <td>
+                        <c:choose>
+                            <c:when test="${packages.getStatus() == 'pending'}">
+                                <button type="button" class="btn btn-sm btn-warning" disabled>Track here</button>
+                            </c:when>
+                            <c:otherwise>
+                                <button type="button" class="btn btn-sm btn-warning">Track here</button>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+
+                </tr>
+            </c:forEach>
+
+            </tbody>
+        </table>
+    </div>
+
 
 </div>
 
 
-
 </body>
-    <%--<!--Footer-->--%>
-    <%--<jsp:include page="utils/footer.jsp">--%>
-    <%--    <jsp:param name="page" value="home"/>--%>
-    <%--</jsp:include>--%>
+<%--<!--Footer-->--%>
+<jsp:include page="utils/footer.jsp">
+    <jsp:param name="page" value="home"/>
+</jsp:include>
 </html>

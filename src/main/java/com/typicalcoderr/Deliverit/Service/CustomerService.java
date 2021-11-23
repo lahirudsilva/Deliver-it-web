@@ -1,72 +1,88 @@
 package com.typicalcoderr.Deliverit.Service;
 
+import com.typicalcoderr.Deliverit.Repository.ShipmentRepository;
 import com.typicalcoderr.Deliverit.Repository.UserRepository;
+import com.typicalcoderr.Deliverit.domain.Shipment;
 import com.typicalcoderr.Deliverit.domain.User;
-import com.typicalcoderr.Deliverit.dto.CustomerDto;
+import com.typicalcoderr.Deliverit.dto.ShipmentDto;
+import com.typicalcoderr.Deliverit.dto.UserDto;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Lahiru
- * Date: Thu
- * Time: 8:56 PM
+ * Date: Tue
+ * Time: 3:16 PM
  */
 @Service
 public class CustomerService {
 
-
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final ShipmentRepository shipmentRepository;
 
     @Autowired
-    public CustomerService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public CustomerService(UserRepository userRepository, ShipmentRepository shipmentRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.shipmentRepository = shipmentRepository;
     }
 
-    @Transactional
-    public CustomerDto registerCustomer(CustomerDto dto) throws DeliveritException {
 
-        Optional existing = userRepository.findUserByEmail(dto.getEmail());
+    public List<UserDto> getAllCustomers() {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
 
-        if(existing.isPresent()){
-            throw new DeliveritException("Email already exists");
+
+
+        List<UserDto> list = new ArrayList<>();
+        for (User customer : userRepository.findUserByUserRole("customer")){
+            UserDto dto= new UserDto();
+            dto.setFirstName(customer.getFirstName());
+            dto.setLastName(customer.getLastName());
+            dto.setEmail(customer.getEmail());
+            dto.setContactNumber(customer.getContactNumber());
+            dto.setJoinedOn(DATE_TIME_FORMATTER.format(customer.getJoinedOn()));
+            list.add(dto);
         }
+        return list;
+    }
 
-        //Save new lecturer after mapping dto to entity class
-        User customer = map(dto);
-        userRepository.save(customer);
-        return dto;
+    public List<ShipmentDto> getAllMyPackages() throws DeliveritException {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
+
+        User user = userRepository.findUserByEmail(getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
+
+
+
+        List<ShipmentDto>  list = new ArrayList<>();
+        for (Shipment shipment : shipmentRepository.findAllByUserIsOrderByCreatedAtDesc(user)){
+            ShipmentDto dto = new ShipmentDto();
+            dto.setCreatedAt(DATE_TIME_FORMATTER.format(shipment.getCreatedAt()));
+            dto.setPickUpDate(shipment.getPickUpDate());
+            dto.setDropOffDate(shipment.getDropOffDate());
+            dto.setSize(shipment.getSize());
+            dto.setWeight(shipment.getWeight());
+            dto.setStatus(shipment.getStatus());
+            list.add(dto);
+        }
+        return list;
+
 
     }
 
-//    Method to map data transfer object to domain class
-    private User map(CustomerDto dto){
-        return User.builder().firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .email(dto.getEmail())
-                .userRole("customer")
-                .joinedOn(Instant.now())
-                .contactNumber(dto.getContactNumber())
-                .password(passwordEncoder.encode(dto.getPassword())).build();
+    public String getUsername() throws DeliveritException {
+        //User object from security context holder to obtain current user
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //If customer is not found
+        com.typicalcoderr.Deliverit.domain.User _user = userRepository.findUserByEmail(user.getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
+
+        return _user.getEmail();
     }
-
-//    Method to map domain class to data transfer object
-    private CustomerDto mapDto(User customer){
-        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy").withZone(ZoneId.systemDefault());
-
-        return new CustomerDto(customer.getEmail(), customer.getFirstName(), customer.getLastName(), customer.getUserRole(), customer.getContactNumber(), DATE_TIME_FORMATTER.format(customer.getJoinedOn()));
-    }
-
-
 }
