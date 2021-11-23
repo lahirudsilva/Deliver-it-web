@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CustomerDto {
+public class UserDto {
 
     private String email;
     private String firstName;
@@ -26,7 +26,7 @@ public class CustomerDto {
     private String joinedOn;
 
 
-    public CustomerDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn) {
+    public UserDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;

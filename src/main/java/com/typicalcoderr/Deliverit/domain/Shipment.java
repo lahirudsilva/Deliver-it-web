@@ -61,7 +61,7 @@ public class Shipment {
 
     private Instant createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customerId", referencedColumnName = "email" )
     private User user;
 
