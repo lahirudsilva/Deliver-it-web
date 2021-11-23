@@ -51,9 +51,9 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">${driver.getDriverFirstName()} ${driver.getDriverLastName()}</h5>
                                                     <p class="card-text">${driver.getVehicleNumber()}</p>
-                            <a href="#" class="btn btn-primary">view details</a>
+                            <a href="#"  class="btn btn-outline-dark">view details</a>
                         </div>
-                        <div class="card-footer text-muted">
+                        <div class="card-footer text-muted text-center">
                             Registered On ${driver.getRegisteredOn()}
                         </div>
                     </div>

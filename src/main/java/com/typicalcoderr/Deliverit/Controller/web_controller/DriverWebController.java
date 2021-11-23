@@ -1,10 +1,10 @@
 package com.typicalcoderr.Deliverit.Controller.web_controller;
 
 import com.typicalcoderr.Deliverit.Service.DriverService;
+import com.typicalcoderr.Deliverit.Service.ShipmentService;
+import com.typicalcoderr.Deliverit.Service.TrackingService;
 import com.typicalcoderr.Deliverit.Service.UserService;
-import com.typicalcoderr.Deliverit.dto.DriverDetailsDto;
-import com.typicalcoderr.Deliverit.dto.SimpleMessageDto;
-import com.typicalcoderr.Deliverit.dto.UserDto;
+import com.typicalcoderr.Deliverit.dto.*;
 import com.typicalcoderr.Deliverit.exceptions.APIException;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.Locale;
 
 /**
@@ -29,11 +31,13 @@ public class DriverWebController {
 
     private final UserService userService;
     private final DriverService driverService;
+    private final ShipmentService shipmentService;
+    private final TrackingService trackingService;
 
 
     @GetMapping("/drivers")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView alldrivers(){
+    public ModelAndView alldrivers() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("drivers");
         mv.addObject("driverList", driverService.getAllDrivers());
@@ -42,7 +46,7 @@ public class DriverWebController {
 
     @GetMapping("/drivers/register-driver")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView registerDriverForm(){
+    public ModelAndView registerDriverForm() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("registerDriverForm");
         return mv;
@@ -50,9 +54,8 @@ public class DriverWebController {
 
     @PostMapping("/add-driver")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView addDriver(@RequestParam String firstName, String lastName, String email, String contactNumber, String driverId, String NIC, String vehicleNumber   ){
+    public ModelAndView addDriver(@RequestParam String firstName, String lastName, String email, String contactNumber, String driverId, String NIC, String vehicleNumber, RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
-
 
 
         try {
@@ -61,7 +64,7 @@ public class DriverWebController {
             String nicNo = NIC;
             String vehicleNo = vehicleNumber;
 
-            if(!(driverService.isExist(id, nicNo,vehicleNo))){
+            if (!(driverService.isExist(id, nicNo, vehicleNo))) {
 
                 UserDto userDto = new UserDto();
                 userDto.setFirstName(firstName);
@@ -81,23 +84,20 @@ public class DriverWebController {
 
                 userService.registerCustomer(userDto);
                 driverService.addDriverDetails(driverDetailsDto);
-                mv.addObject("success", new SimpleMessageDto("Driver added successfully!"));
+                redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Driver added successfully!"));
 
 
             }
 
 
-        }catch (DeliveritException e){
-            mv.addObject("error", new APIException(e.getMessage()));
+        } catch (DeliveritException e) {
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
         }
-        mv.setViewName("registerDriverForm");
+        mv.setViewName("redirect:/drivers/register-driver");
         return mv;
 
 
-
-
-
-
-
     }
+
+
 }

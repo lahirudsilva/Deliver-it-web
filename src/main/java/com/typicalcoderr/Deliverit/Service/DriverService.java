@@ -36,6 +36,8 @@ public class DriverService {
         this.userRepository = userRepository;
     }
 
+
+
     @Transactional
     public DriverDetails addDriverDetails(DriverDetailsDto dto) throws DeliveritException {
 
@@ -89,5 +91,26 @@ public class DriverService {
             list.add(dto);
         }
         return list;
+    }
+
+    public List<DriverDetailsDto> getAllAvailableDrivers() {
+        List<DriverDetailsDto> list = new ArrayList<>();
+        for (DriverDetails driver : driverDetailsRepository.findAllByStatusIsLike("available")){
+            DriverDetailsDto dto = new DriverDetailsDto();
+            dto.setDriverId(driver.getDriverId());
+            dto.setDriverFirstName(driver.getUser().getFirstName());
+            dto.setDriverLastName(driver.getUser().getLastName());
+            list.add(dto);
+        }
+        return list;
+    }
+
+    public DriverDetails toggleDriverAvailability(DriverDetailsDto driverDetailsDto) throws DeliveritException {
+
+        DriverDetails driverDetails = driverDetailsRepository.findByDriverId(driverDetailsDto.getDriverId()).orElseThrow(()-> new DeliveritException("driver not found"));
+
+        driverDetails.setStatus("unavailable");
+
+        return driverDetailsRepository.save(driverDetails);
     }
 }
