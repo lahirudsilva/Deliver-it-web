@@ -17,7 +17,10 @@ public class Tracking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer trackingId;
+
+
     private String shipmentStatus;
+
     private Instant updatedAt;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipmentId", referencedColumnName = "shipmentId")
