@@ -49,11 +49,15 @@
                 <th>Dropoff Date</th>
                 <th>Package Size</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th class="text-center">Action</th>
             </tr>
             </thead>
             <tbody>
             <c:forEach var="packages" items="${packageList}">
+                <c:url value = "#" var = "url">
+                    <c:param name = "shipmentId" value = "${packages.getShipmentId()}"/>
+                </c:url>
+
                 <tr>
                     <td>${packages.getCreatedAt()}</td>
                     <td>
@@ -79,13 +83,17 @@
                     <td>${packages.getSize()} - ${packages.getWeight()}Kg</td>
                     <td>${packages.getStatus()}</td>
 
-                    <td>
+                    <td class="text-center">
                         <c:choose>
                             <c:when test="${packages.getStatus() == 'pending'}">
                                 <button type="button" class="btn btn-sm btn-warning" disabled>Track here</button>
                             </c:when>
                             <c:otherwise>
-                                <button type="button" class="btn btn-sm btn-warning">Track here</button>
+                                <form method="GET" action="/track-package">
+                                    <input hidden id="editIdInput${packages.getShipmentId()}" name="shipmentId"
+                                           value="${packages.getShipmentId()}"/>
+                                <button type="submit" class="btn btn-sm btn-warning"  >Track here</button>
+                                </form>
                             </c:otherwise>
                         </c:choose>
                     </td>
