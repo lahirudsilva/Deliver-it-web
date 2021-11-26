@@ -1,9 +1,6 @@
 package com.typicalcoderr.Deliverit.Controller.web_controller;
 
-import com.typicalcoderr.Deliverit.Service.DriverService;
-import com.typicalcoderr.Deliverit.Service.ShipmentService;
-import com.typicalcoderr.Deliverit.Service.TrackingService;
-import com.typicalcoderr.Deliverit.Service.UserService;
+import com.typicalcoderr.Deliverit.Service.*;
 import com.typicalcoderr.Deliverit.dto.*;
 import com.typicalcoderr.Deliverit.exceptions.APIException;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
@@ -33,28 +30,46 @@ public class DriverWebController {
     private final DriverService driverService;
     private final ShipmentService shipmentService;
     private final TrackingService trackingService;
+    private final WarehouseService warehouseService;
 
 
     @GetMapping("/drivers")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView alldrivers() {
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ModelAndView allDrivers() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("drivers");
         mv.addObject("driverList", driverService.getAllDrivers());
         return mv;
     }
 
+    @GetMapping("/driversForWarehouse")
+    @PreAuthorize("hasAnyRole('SUPERVISOR')")
+    public ModelAndView allDriversforWarehouse() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("drivers");
+        try {
+            mv.addObject("warehouseLocation", warehouseService.getWarehouseLocation());
+            mv.addObject("driverListForWarehouse", warehouseService.getAllDriversForWareHouse());
+        }catch (DeliveritException e){
+            mv.addObject("error" ,new APIException(e.getMessage()));
+        }
+        return mv;
+    }
+
+
+
     @GetMapping("/drivers/register-driver")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView registerDriverForm() {
         ModelAndView mv = new ModelAndView();
+        mv.addObject("warehouses", warehouseService.getAllWarehouses());
         mv.setViewName("registerDriverForm");
         return mv;
     }
 
     @PostMapping("/add-driver")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView addDriver(@RequestParam String firstName, String lastName, String email, String contactNumber, String driverId, String NIC, String vehicleNumber, RedirectAttributes redirectAttributes) {
+    public ModelAndView addDriver(@RequestParam String firstName, String lastName, String email, String contactNumber, String driverId, String NIC, String vehicleNumber,String warehouseId, String city ,RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
 
 
@@ -73,7 +88,9 @@ public class DriverWebController {
                 userDto.setContactNumber(contactNumber);
                 userDto.setPassword(driverId.toUpperCase(Locale.ROOT));
                 userDto.setUserRole("driver");
-
+                userDto.setWarehouseNumber(warehouseId);
+                userDto.setCity(city);
+                System.out.println(userDto);
 
                 DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
                 driverDetailsDto.setDriverId(driverId);
@@ -82,7 +99,7 @@ public class DriverWebController {
                 driverDetailsDto.setDriverEmail(email);
 
 
-                userService.registerCustomer(userDto);
+                userService.registerUser(userDto);
                 driverService.addDriverDetails(driverDetailsDto);
                 redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Driver added successfully!"));
 
@@ -95,6 +112,47 @@ public class DriverWebController {
         }
         mv.setViewName("redirect:/drivers/register-driver");
         return mv;
+
+
+    }
+
+
+    @PostMapping("/assign-driver")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView assignDriver(@RequestParam String pickupDate, String dropoffDate, String driverId, String shipmentId , RedirectAttributes redirectAttributes) {
+        ModelAndView mv = new ModelAndView();
+
+
+
+        try {
+            ShipmentDto shipmentDto = new ShipmentDto();
+            shipmentDto.setShipmentId(Integer.parseInt(shipmentId));
+            shipmentDto.setPickUpDate(LocalDate.parse(pickupDate));
+            shipmentDto.setDropOffDate(LocalDate.parse(dropoffDate));
+
+            TrackingDto trackingDto = new TrackingDto();
+            trackingDto.setDriverId(driverId);
+            trackingDto.setShipmentId(Integer.parseInt(shipmentId));
+
+            DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
+            driverDetailsDto.setDriverId(driverId);
+
+            shipmentService.updateDates(shipmentDto);
+            trackingService.addTracking(trackingDto);
+            driverService.toggleDriverAvailability(driverDetailsDto);
+
+//            mv = homeAdmin(null);
+            redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Driver Assigned successfully!"));
+
+        } catch (DeliveritException e) {
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
+        }
+
+        mv.setViewName("redirect:/home-admin");
+
+        return mv;
+
+
 
 
     }
