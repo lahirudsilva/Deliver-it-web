@@ -1,6 +1,8 @@
 package com.typicalcoderr.Deliverit.Controller.web_controller;
 
+import com.typicalcoderr.Deliverit.Service.EmailService;
 import com.typicalcoderr.Deliverit.Service.ShipmentService;
+import com.typicalcoderr.Deliverit.Service.WarehouseService;
 import com.typicalcoderr.Deliverit.dto.ShipmentDto;
 import com.typicalcoderr.Deliverit.dto.SimpleMessageDto;
 import com.typicalcoderr.Deliverit.exceptions.APIException;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.mail.MessagingException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Lahiru
@@ -25,12 +29,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ShipmentWebController {
 
     private final ShipmentService shipmentService;
+    private final EmailService emailService;
+    private  final WarehouseService warehouseService;
 
 
     @GetMapping("/createPackage")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ModelAndView sendPackageForm() {
         ModelAndView mv = new ModelAndView();
+        mv.addObject("warehouses", warehouseService.getAllWarehouses());
         mv.setViewName("createPackageForm");
 
 
@@ -39,7 +46,7 @@ public class ShipmentWebController {
 
     @PostMapping("/add-package")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ModelAndView addPackage(@RequestParam String senderAddress, String receiverAddress, String receiverEmail, String receiverContactNumber, String packageSize, Double packageWeight, double estimatedCost, RedirectAttributes redirectAttributes) {
+    public ModelAndView addPackage(@RequestParam String senderAddress, String receiverAddress, String receiverEmail, String receiverContactNumber, String packageSize, Double packageWeight, double estimatedCost,String warehouseNumber,String description ,RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
         try {
 
@@ -51,6 +58,8 @@ public class ShipmentWebController {
             dto.setSize(packageSize);
             dto.setWeight(packageWeight);
             dto.setEstimatedPrice(estimatedCost);
+            dto.setWarehouseNumber(warehouseNumber);
+            dto.setDescription(description);
 
 
             shipmentService.addShipment(dto);
@@ -64,18 +73,48 @@ public class ShipmentWebController {
         return mv;
     }
 
-    @GetMapping("/requests")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView viewAllPendingRequests(){
-        return getPendingRequests();
-    }
+//    @GetMapping("/requests")
+//    @PreAuthorize("hasRole('SUPERVISOR')")
+//    public ModelAndView viewAllPendingRequests(){
+//        return getPendingRequests();
+//    }
+//
+//    //method to all the newly added pending requests from customers
+//    private ModelAndView getPendingRequests(){
+//        ModelAndView mv = new ModelAndView();
+//
+//        try {
+//            mv.setViewName("adminHome");
+//
+//            System.out.println(mv);
+//            mv.addObject("requests", shipmentService.getAllPendingRequests());
+//        }catch (DeliveritException e){
+//            e.printStackTrace();
+//        }
+//
+//        return mv;
+//    }
 
-    //method to all the newly added pending requests from customers
-    private ModelAndView getPendingRequests(){
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("adminHome");
-        mv.addObject("requests", shipmentService.getAllPendingRequests());
 
+    @PostMapping("/rejectShipment")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
+    public ModelAndView rejectShipments(@RequestParam Integer shipmentId,String senderEmail, String receiverEmail,  RedirectAttributes redirectAttributes){
+        ModelAndView mv =new ModelAndView();
+        System.out.println(senderEmail + receiverEmail);
+
+        ShipmentDto dto = new ShipmentDto();
+        dto.setShipmentId(shipmentId);
+        dto.setSenderEmail(senderEmail);
+        dto.setReceiverEmail(receiverEmail);
+        try{
+            emailService.sendSimpleMessage(dto);
+            shipmentService.changeShipmentStatusToReject(dto);
+            redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Successfully delivery request has been Rejected!"));
+        }catch (DeliveritException | MessagingException e){
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
+        }
+        mv.setViewName("redirect:/home-admin");
         return mv;
+
     }
 }

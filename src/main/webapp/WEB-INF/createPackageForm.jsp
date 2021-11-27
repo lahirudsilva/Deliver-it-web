@@ -55,25 +55,44 @@
             </div>
             <hr/>
             <h6 class="card-subtitle mb-2 text-muted"><strong>Package details</strong></h6>
-            <div class="row g-3">
-            <div class="col-auto form-holder">
-                <label for="packageSize">Select package size</label>
-                <select class="form-control" id="packageSize" name="packageSize" required>
-                    <option value="" selected disabled hidden>Choose...</option>
-                    <option value="small">Small(16"x12"x12")</option>
-                    <option value="medium">Medium(18"x18"x18")</option>
-                    <option value="large">Large(24"x18"x18")</option>
-                    <option value="X-large">X-Large(24"x18"x24")</option>
-                </select>
-                <small id="emailHelp" class="form-text text-muted">size = height x width x length</small>
+            <div class="form-group form-holder">
+                <label for="exampleInputDescription">About package(Optional)</label>
+
+                <textarea class="form-control" id="exampleInputDescription" rows="3" name="description"
+                          placeholder=" Notes about your package" ></textarea>
             </div>
-            <div class="col-auto form-holder">
-                <label for="packageWeight">Package Weight</label>
-                <input class="form-control" id="packageWeight" type="text" onkeyup="calculateCost()"
-                       placeholder="Weight in kilograms"
-                       name="packageWeight"
-                       required>
-            </div>
+
+            <div class="row g-3" style=" padding: 10px;">
+                <div class="col-auto form-holder">
+                    <label for="packageSize">Select package size</label>
+                    <select class="form-control" id="packageSize" name="packageSize" required>
+                        <option value="" selected disabled hidden>Choose...</option>
+                        <option value="small">Small(16"x12"x12")</option>
+                        <option value="medium">Medium(18"x18"x18")</option>
+                        <option value="large">Large(24"x18"x18")</option>
+                        <option value="X-large">X-Large(24"x18"x24")</option>
+                    </select>
+                    <small id="sizeHelp" class="form-text text-muted">size = height x width x length</small>
+                </div>
+                <div class="col-auto form-holder">
+                    <label for= "packageWeight">Package Weight</label>
+                    <input class="form-control" id="packageWeight" type="text" onkeyup="calculateCost()"
+                           placeholder="Weight in kilograms"
+                           name="packageWeight"
+                           required>
+                </div>
+
+                <div class="col-auto form-holder">
+                    <label for="warehouseLocation">Select warehouse</label>
+                    <select class="form-control" id="warehouseLocation" name="warehouseNumber" required>
+                        <c:forEach var="warehouse" items="${warehouses}">
+                        <option value="" selected disabled hidden>Choose closest warehouse for you...</option>
+                        <option value="${warehouse.getWarehouseNumber()}"> ${warehouse.getLocation()}</option>
+                        </c:forEach>
+                    </select>
+
+                </div>
+
             </div>
             <div class="form-group form-holder">
 

@@ -56,6 +56,9 @@ public class Shipment {
     @NotNull(message = "weight is required")
     private Double weight;
 
+    @Column( nullable = true)
+    private String description;
+
     @NotNull(message = "estimate cost is required")
     private Double estimatedPrice;
 
@@ -64,6 +67,10 @@ public class Shipment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId", referencedColumnName = "email" )
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouseId", referencedColumnName = "warehouseNumber")
+    private Warehouse warehouse;
 
 
 }

@@ -32,6 +32,9 @@ public class ShipmentDto {
     private Double weight;
     private Double estimatedPrice;
     private String createdAt;
+    private String description;
+    private String warehouseLocation;
+    private String warehouseNumber;
     private User user;
 
 

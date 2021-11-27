@@ -40,9 +40,9 @@ public class ShipmentController {
 
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/home-admin")
-    public ResponseEntity<Object> getAllPendingRequests(){
-        return new ResponseEntity<>(shipmentService.getAllPendingRequests(), HttpStatus.OK);
-    }
+//    @PreAuthorize("hasRole('ADMIN')")
+//    @GetMapping("/home-admin")
+//    public ResponseEntity<Object> getAllPendingRequests(){
+//        return new ResponseEntity<>(shipmentService.getAllPendingRequests(), HttpStatus.OK);
+//    }
 }
