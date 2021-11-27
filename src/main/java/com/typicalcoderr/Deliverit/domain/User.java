@@ -40,10 +40,19 @@ public class User {
     @Pattern(regexp="(^$|[0-9]{10})",message = "Incorrect Mobile Number")
     private String contactNumber;
 
+    @NotEmpty(message = "City is required")
+    @Column(nullable = false)
+    private String city;
+
     @NotEmpty(message = "Role is required")
     @Column(nullable = false)
     private String userRole;
 
     private Instant joinedOn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouseId", referencedColumnName = "warehouseNumber")
+    private Warehouse warehouse;
+
 
 }

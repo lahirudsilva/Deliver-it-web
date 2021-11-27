@@ -17,7 +17,6 @@ public class UserUtilities {
         boolean hasRole = false;
         try{
             Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-
             for (GrantedAuthority authority : authorities){
                 hasRole = authority.getAuthority().equals(role);
                 System.out.println(authority.getAuthority());

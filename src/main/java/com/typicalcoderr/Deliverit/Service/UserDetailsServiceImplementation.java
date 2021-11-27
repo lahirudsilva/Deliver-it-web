@@ -28,22 +28,29 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String email){
+
         //Find user from database
         Optional<User> userOptional = userRepository.findUserByEmail(email);
         User user = userOptional.orElseThrow(()-> new UsernameNotFoundException("User not found"));
+
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
                 true, true, true, true,
                 getAuthorities(user.getUserRole().toUpperCase()));
 
 
+
+
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(String role){
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+role));
+
+
     }
+
 
 
 }

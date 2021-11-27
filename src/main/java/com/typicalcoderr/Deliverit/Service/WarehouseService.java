@@ -58,9 +58,7 @@ public class WarehouseService {
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
         //get logged in user
         User supervisor = userRepository.findUserByEmail(getUsername()).orElseThrow(() -> new DeliveritException("user not found!"));
-        System.out.println("test 1 "+supervisor);
         String warehouse = supervisor.getWarehouse().getWarehouseNumber();
-        System.out.println("test 2 "+ warehouse);
 //        User drivers = userRepository.findUserByUserRoleAndAndWarehouseIsLike("driver", warehouse);
 //        System.out.println("test 3"+ drivers);
 
