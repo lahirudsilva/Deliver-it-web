@@ -35,20 +35,48 @@ public class TrackingWebController {
 
     }
 
+    @GetMapping("/searchTrackingNumber")
+    @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN')")
+    public ModelAndView searchTracking(){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("searchTrackingNumber");
+        return mv;
+    }
+
+    @GetMapping("/search-trackID")
+    @PreAuthorize("hasAnyRole('CUSTOMER','ADMIN')")
+    public ModelAndView searchEnteredTracking(@RequestParam Integer trackIDKey, RedirectAttributes redirectAttributes){
+        ModelAndView mv = new ModelAndView();
+
+        try {
+
+            redirectAttributes.addFlashAttribute("trackings", trackingService.getShipmentDetails(trackIDKey));
+            redirectAttributes.addFlashAttribute("searchKey",trackIDKey);
+
+
+        }catch (DeliveritException e){
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
+        }
+        mv.setViewName("redirect:/searchTrackingNumber");
+        return mv;
+
+    }
+
 
 
     @GetMapping("/track-package")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
-    public ModelAndView getTrackingDetails(@RequestParam String shipmentId, RedirectAttributes redirectAttributes){
+    public ModelAndView getTrackingDetails(@RequestParam Integer shipmentId){
         ModelAndView mv = new ModelAndView();
-        System.out.println(shipmentId + "dssd");
 
-        TrackingDto trackingDto = new TrackingDto();
-        trackingDto.setShipmentId(Integer.parseInt(shipmentId));
+//        TrackingDto trackingDto = new TrackingDto();
+//        trackingDto.setShipmentId(Integer.parseInt(shipmentId));
 
         try {
 
-            mv.addObject("trackingDetailsList", trackingService.getTrackingDetails(trackingDto));
+            mv.addObject("trackings", trackingService.getTrackingDetails(shipmentId));
+
+
 
         }catch (DeliveritException e){
             mv.addObject("error", new APIException(e.getMessage()));

@@ -8,6 +8,7 @@ import com.typicalcoderr.Deliverit.domain.Shipment;
 import com.typicalcoderr.Deliverit.domain.Tracking;
 import com.typicalcoderr.Deliverit.dto.ShipmentDto;
 import com.typicalcoderr.Deliverit.dto.TrackingDto;
+import com.typicalcoderr.Deliverit.enums.TrackingStatusType;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,11 +37,11 @@ public class TrackingService {
     public Tracking addTracking(TrackingDto trackingDto) throws DeliveritException {
 
 
-        DriverDetails driver = driverDetailsRepository.findById(trackingDto.getDriverId()).orElseThrow(()-> new DeliveritException("Driver not Found!"));
-        Shipment shipment = shipmentRepository.findById(trackingDto.getShipmentId()).orElseThrow(()-> new DeliveritException("Shipment not found!"));
+        DriverDetails driver = driverDetailsRepository.findById(trackingDto.getDriverId()).orElseThrow(() -> new DeliveritException("Driver not Found!"));
+        Shipment shipment = shipmentRepository.findById(trackingDto.getShipmentId()).orElseThrow(() -> new DeliveritException("Shipment not found!"));
 
         Tracking tracking = new Tracking();
-        tracking.setShipmentStatus("Driver is on the way to pickup");
+        tracking.setShipmentStatus(TrackingStatusType.PICKUP_IN_PROGRESS.getType());
         tracking.setUpdatedAt(Instant.now());
         tracking.setDriverDetails(driver);
         tracking.setShipment(shipment);
@@ -51,33 +52,51 @@ public class TrackingService {
 
     }
 
-    public Shipment getShipmentById(int id) throws DeliveritException{
-        Shipment shipmentObj = shipmentRepository.findById(id).orElseThrow(()-> new DeliveritException("Shipment not found!"));
+    public Shipment getShipmentById(int id) throws DeliveritException {
+        Shipment shipmentObj = shipmentRepository.findById(id).orElseThrow(() -> new DeliveritException("Shipment not found!"));
         return shipmentObj;
 
     }
 
-    public List<TrackingDto> getTrackingDetails(TrackingDto trackingDto) throws DeliveritException{
+    public TrackingDto getTrackingDetails(Integer shipmentId) throws DeliveritException {
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
 
-//        Shipment shipment = trackingRepository.findTrackingsByShipment(trackingDto.getShipmentId()).orElseThrow(()->new DeliveritException("Shipment not found!"));
-        Shipment shipment = getShipmentById(trackingDto.getShipmentId());
+        Shipment shipment = getShipmentById(shipmentId);
+        Tracking tracking = trackingRepository.findTrackingsByShipment(shipment);
 
-        List<TrackingDto> list = new ArrayList<>();
-        for (Tracking tracking: trackingRepository.findTrackingsByShipment(shipment)){
-            TrackingDto dto = new TrackingDto();
-            dto.setTrackingId(tracking.getTrackingId());
-            dto.setShipmentId(tracking.getShipment().getShipmentId());
-            dto.setShipmentStatus(tracking.getShipmentStatus());
-            dto.setUpdatedAt(DATE_TIME_FORMATTER.format(tracking.getUpdatedAt()));
-            dto.setDropOffDate(tracking.getShipment().getDropOffDate());
-            dto.setDriverContactNumber(tracking.getDriverDetails().getUser().getContactNumber());
-            dto.setDriverFirstName(tracking.getDriverDetails().getUser().getFirstName());
-            dto.setDriverLastName(tracking.getDriverDetails().getUser().getLastName());
-            dto.setDriverVehicleNumber(tracking.getDriverDetails().getVehicleNumber());
-            list.add(dto);
-        }
-        return list;
+
+        TrackingDto dto = new TrackingDto();
+        dto.setTrackingId(tracking.getTrackingId());
+        dto.setShipmentId(tracking.getShipment().getShipmentId());
+        dto.setShipmentStatus(tracking.getShipmentStatus());
+        dto.setUpdatedAt(DATE_TIME_FORMATTER.format(tracking.getUpdatedAt()));
+        dto.setDriverContactNumber(tracking.getDriverDetails().getUser().getContactNumber());
+        dto.setDropOffDate(tracking.getShipment().getDropOffDate());
+        dto.setDriverFirstName(tracking.getDriverDetails().getUser().getFirstName());
+        dto.setDriverLastName(tracking.getDriverDetails().getUser().getLastName());
+        dto.setDriverVehicleNumber(tracking.getDriverDetails().getVehicleNumber());
+
+
+        return dto;
+
+    }
+
+    public TrackingDto getShipmentDetails(Integer trackIDKey) throws DeliveritException {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
+
+        Tracking tracking = trackingRepository.findById(trackIDKey).orElseThrow(() -> new DeliveritException("Track Number not Found!"));
+        TrackingDto dto = new TrackingDto();
+        dto.setShipmentId(tracking.getShipment().getShipmentId());
+        dto.setTrackingId(tracking.getTrackingId());
+        dto.setUpdatedAt(DATE_TIME_FORMATTER.format(tracking.getUpdatedAt()));
+        dto.setShipmentStatus(tracking.getShipmentStatus());
+        dto.setDropOffDate(tracking.getShipment().getDropOffDate());
+        dto.setDriverContactNumber(tracking.getDriverDetails().getUser().getContactNumber());
+        dto.setDriverFirstName(tracking.getDriverDetails().getUser().getFirstName());
+        dto.setDriverLastName(tracking.getDriverDetails().getUser().getLastName());
+        dto.setDriverVehicleNumber(tracking.getDriverDetails().getVehicleNumber());
+        return dto;
+
 
     }
 }

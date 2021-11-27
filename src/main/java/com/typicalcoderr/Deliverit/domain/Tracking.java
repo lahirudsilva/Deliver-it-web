@@ -18,7 +18,6 @@ public class Tracking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer trackingId;
 
-
     private String shipmentStatus;
 
     private Instant updatedAt;

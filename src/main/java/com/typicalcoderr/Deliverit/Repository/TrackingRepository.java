@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface TrackingRepository extends JpaRepository<Tracking,Integer> {
-    List<Tracking> findTrackingsByShipment(Shipment shipment);
+    Tracking findTrackingsByShipment(Shipment shipment);
 }
