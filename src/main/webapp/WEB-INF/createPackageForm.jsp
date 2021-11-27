@@ -76,7 +76,7 @@
                 </div>
                 <div class="col-auto form-holder">
                     <label for= "packageWeight">Package Weight</label>
-                    <input class="form-control" id="packageWeight" type="text" onkeyup="calculateCost()"
+                    <input class="form-control" id="packageWeight" type="number" onkeyup="calculateCost()"
                            placeholder="Weight in kilograms"
                            name="packageWeight"
                            required>

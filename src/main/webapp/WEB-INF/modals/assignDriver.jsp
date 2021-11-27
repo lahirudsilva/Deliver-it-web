@@ -121,8 +121,8 @@
     var firstday = (new Date(curr.setDate(first))).toString();
     var options = "";
     let i = 0
-    for (i; i < 14; i++) {
-        if (i === 14) {
+    for (i; i < 15; i++) {
+        if (i === 15) {
             break;
         }
         var next = new Date(curr.getTime());

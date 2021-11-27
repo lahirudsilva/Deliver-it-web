@@ -41,7 +41,7 @@
                         <!--end of col-->
 
                         <div class="col">
-                            <input class="form-control form-control-md form-control-borderless" type="search"
+                            <input type="number" class="form-control form-control-md form-control-borderless" type="search"
                                    name="trackIDKey"
                                    placeholder="Search Tracking Number" required>
                         </div>
