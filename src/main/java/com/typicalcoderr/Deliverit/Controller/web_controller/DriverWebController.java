@@ -118,7 +118,7 @@ public class DriverWebController {
 
 
     @PostMapping("/assign-driver")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPERVISOR')")
     public ModelAndView assignDriver(@RequestParam String pickupDate, String dropoffDate, String driverId, String shipmentId , RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
 
@@ -148,7 +148,7 @@ public class DriverWebController {
             redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
         }
 
-        mv.setViewName("redirect:/home-admin");
+        mv.setViewName("redirect:/home-supervisor");
 
         return mv;
 

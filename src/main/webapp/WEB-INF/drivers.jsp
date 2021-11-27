@@ -162,7 +162,9 @@
 </body>
 
 <!--Footer-->
+<div style="margin-top: 350px">
 <%@ include file="utils/footer.jsp" %>
+</div>
 
 </html>
 

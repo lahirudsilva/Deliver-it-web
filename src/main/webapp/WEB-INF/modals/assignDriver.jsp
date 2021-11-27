@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <div
         class="modal fade"
         id="AssignDriverModal${requests.getShipmentId()}"
@@ -6,24 +7,24 @@
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
 >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Shipment ID: ${requests.getShipmentId()} </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
+            <form method="POST" action="/assign-driver">
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-body">
 
-            <div class="modal-body">
-                <div class="card-body">
-                    <div class="form-body">
-                        <form method="POST" action="/assign-driver">
                             <input hidden id="editIdInput${requests.getShipmentId()}" name="shipmentId"
                                    value="${requests.getShipmentId()}"/>
 
                             <div class="form-row form-row-modal mb-3">
                                 <label id="receiverEmail"> Receiver Email : </label>
-                                <span><strong> ${requests.getReceiverEmail()}  </strong></span>
+                                <span><strong> ${requests.getReceiverEmail()} </strong></span>
 
                             </div>
 
@@ -34,22 +35,38 @@
                             </div>
 
                             <div class="form-row form-row-modal mb-3">
+                                <label id="packageDescription"> Package Description: </label>
+                                <c:choose>
+                                    <c:when test="${requests.getDescription() == ''}">
+                                        <span> <strong> No notes available </strong></span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span> <strong> ${requests.getDescription()} </strong></span>
+                                    </c:otherwise>
+                                </c:choose>
+
+
+                            </div>
+
+                            <sec:authorize access="hasRole('SUPERVISOR')">
+                            <div class="form-row form-row-modal mb-3">
                                 <label id="SelectPickupDate"> Select Pickup Date : </label>
-                                <select name ="pickupDate" id="datemenu1" class="info" required>
-                                    <option value="" selected disabled hidden>Select a  Date</option>
+                                <select name="pickupDate" id="datemenu1" class="info" required>
+                                    <option value="" selected disabled hidden>Select a Date</option>
                                 </select>
                             </div>
 
                             <div class="form-row form-row-modal mb-3">
                                 <label id="SelectDropoffDate"> Select Dropoff Date : </label>
-                                <select name ="dropoffDate" id="datemenu2" class="info" required>
+                                <select name="dropoffDate" id="datemenu2" class="info" required>
                                     <option value="" selected disabled hidden>Select a Date</option>
                                 </select>
                             </div>
 
 
                             <div class="form-row form-row-modal">
-                                <label for="inputSelectDriver${requests.getShipmentId()}">Available Drivers :</label>
+                                <label for="inputSelectDriver${requests.getShipmentId()}">Available Drivers
+                                    :</label>
                                 <select class="custom-select form-control select-filter"
                                         id="inputSelectDriver${requests.getShipmentId()}" name="driverId" required>
                                     <c:forEach var="driver" items="${availableDrivers}">
@@ -58,21 +75,30 @@
                                     </c:forEach>
                                 </select>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Assign Driver</button>
-                            </div>
 
-                        </form>
+
+                        </div>
 
                     </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-dismiss="modal"
+                            data-bs-whatever="${requests.getReceiverEmail()}"
+                            data-bs-target="#RejectShipment">
+                        Reject Shipment
+                    </button>
+                    <button type="submit" class="btn btn-primary">Assign Driver</button>
 
                 </div>
-            </div>
+                </sec:authorize>
+
+            </form>
 
         </div>
     </div>
 </div>
+
 
 <script>
     //set pickup & dropoff date drop down
@@ -89,11 +115,16 @@
 
         return [year, month, day].join('-');
     }
+
     var curr = new Date;
     var first = curr.getDate()
     var firstday = (new Date(curr.setDate(first))).toString();
     var options = "";
-    for (var i = 0; i < 7; i++) {
+    let i = 0
+    for (i; i < 14; i++) {
+        if (i === 14) {
+            break;
+        }
         var next = new Date(curr.getTime());
         next.setDate(first + i);
         options += '<option style="color:black;">' + formatDate((next.toString())) + '</option>';

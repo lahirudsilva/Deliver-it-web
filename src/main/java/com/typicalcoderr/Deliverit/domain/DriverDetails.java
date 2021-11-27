@@ -50,6 +50,8 @@ public class DriverDetails {
 
     private Instant registeredOn;
 
+    private Integer noOfAssignedRides;
+
     //user
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", referencedColumnName = "email")

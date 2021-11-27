@@ -1,6 +1,7 @@
 package com.typicalcoderr.Deliverit.Repository;
 
 import com.typicalcoderr.Deliverit.domain.DriverDetails;
+import com.typicalcoderr.Deliverit.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +19,8 @@ public interface DriverDetailsRepository extends JpaRepository<DriverDetails, St
     Optional <DriverDetails> findByDriverId (String driverId);
     Optional <DriverDetails> findByNIC (String NIC);
     Optional <DriverDetails> findByVehicleNumber(String vehicleNumber);
-    List <DriverDetails> findAllByStatusIsLike(String status);
+    List <DriverDetails> findAllByStatusIsLikeAndUser_WarehouseWarehouseNumberLike(String status, String warehouseNumber);
+    List <DriverDetails> findDriverDetailsByUser_Warehouse_WarehouseNumberLike(String warehouseNumber);
+//    List <DriverDetails> findAllByStatusIsLikeAndNoOfAssignedRidesLessThanEqualAndUser_WarehouseWarehouseNumberLike(String status, Integer noOfRides, String warehouseNumber);
+
 }
