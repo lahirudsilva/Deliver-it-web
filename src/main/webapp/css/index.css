@@ -103,6 +103,10 @@ body {
     width: 20%;
 }
 
+.badge-in-add {
+    width: 20%;
+}
+
 .btn-in-add:hover {
     color: white !important;
 }
@@ -123,6 +127,19 @@ body {
     margin-left: 15px;
 }
 
+.title-search{
+    width: 50%;
+}
+
+.btn-search{
+    width: 50%;
+}
+
+.tracking-card{
+    padding: 10px;
+    margin-top: 60px;
+    margin-bottom: 100px;
+}
 
 /*<!---->tracking*/
 
@@ -206,4 +223,17 @@ body {
 .card-timeline {
     background-color: #fff;
     z-index: 0
+}
+
+
+/*sds*/
+
+.form-control-borderless {
+    border: none;
+}
+
+.form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
 }

@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css"/>
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="https://use.fontawesome.com/releases/v5.8.1/css/all.css"></script>
 
 
 

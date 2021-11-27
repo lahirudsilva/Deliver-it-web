@@ -55,6 +55,7 @@
                                     <br/>
 
                                     <p class="errors" style="color: red">${error}</p>
+                                    <p class="success" style="color: green">${success}</p>
                                     <br/>
 
 
@@ -63,7 +64,7 @@
                                     </div>
 
                                     <a class="small text-muted" href="#!">Forgot password?</a>
-                                    <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="#!" style="color: #393f81;">Register here</a></p>
+                                    <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="/register" style="color: #393f81;">Register here</a></p>
                                     <a href="#!" class="small text-muted">Terms of use.</a>
                                     <a href="#!" class="small text-muted">Privacy policy</a>
                                 </form>
