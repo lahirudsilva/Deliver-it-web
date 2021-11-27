@@ -9,8 +9,11 @@ import com.typicalcoderr.Deliverit.dto.UserDto;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,12 +30,40 @@ import java.util.Optional;
 public class CustomerService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final ShipmentRepository shipmentRepository;
 
     @Autowired
-    public CustomerService(UserRepository userRepository, ShipmentRepository shipmentRepository) {
+    public CustomerService(UserRepository userRepository, PasswordEncoder passwordEncoder, ShipmentRepository shipmentRepository) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
         this.shipmentRepository = shipmentRepository;
+    }
+
+    @Transactional
+    public User registerCustomer(UserDto dto) throws DeliveritException {
+
+        Optional existing = userRepository.findUserByEmail(dto.getEmail());
+
+        if(existing.isPresent()){
+            throw new DeliveritException("Email already exists!");
+        }
+
+        User customer = new User();
+        customer.setFirstName(dto.getFirstName());
+        customer.setLastName(dto.getLastName());
+        customer.setEmail(dto.getEmail());
+        customer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        customer.setUserRole("customer");
+        customer.setCity(dto.getCity());
+        customer.setContactNumber(dto.getContactNumber());
+        customer.setJoinedOn(Instant.now());
+
+        return userRepository.save(customer);
+
+        //Save new user after mapping dto to entity class
+
+
     }
 
 
@@ -47,7 +78,7 @@ public class CustomerService {
             dto.setFirstName(customer.getFirstName());
             dto.setLastName(customer.getLastName());
             dto.setEmail(customer.getEmail());
-            dto.setContactNumber(customer.getContactNumber());
+            dto.setContactNumber("+" +customer.getContactNumber());
             dto.setJoinedOn(DATE_TIME_FORMATTER.format(customer.getJoinedOn()));
             list.add(dto);
         }
@@ -64,6 +95,7 @@ public class CustomerService {
         List<ShipmentDto>  list = new ArrayList<>();
         for (Shipment shipment : shipmentRepository.findAllByUserIsOrderByCreatedAtDesc(user)){
             ShipmentDto dto = new ShipmentDto();
+            dto.setShipmentId(shipment.getShipmentId());
             dto.setCreatedAt(DATE_TIME_FORMATTER.format(shipment.getCreatedAt()));
             dto.setPickUpDate(shipment.getPickUpDate());
             dto.setDropOffDate(shipment.getDropOffDate());

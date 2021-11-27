@@ -29,7 +29,7 @@ public class CustomerController {
     public ResponseEntity<Object> addCustomer(@RequestBody UserDto dto) throws DeliveritException {
 
         try {
-            userService.registerCustomer(dto);
+            userService.registerUser(dto);
             return new ResponseEntity<>("User Successfully Registered! Please login.", HttpStatus.CREATED);
 
         } catch (DeliveritException e) {

@@ -31,18 +31,16 @@ public class CustomErrorWebController implements ErrorController {
             System.out.println(statusCode);
 
             if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                return "errors/404_error.jsp";
+                return "errors/404_error";
             } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                return "errors/500_error.jsp";
-            } else if (statusCode == HttpStatus.METHOD_NOT_ALLOWED.value() || statusCode == HttpStatus.FORBIDDEN.value()) {
+                return "errors/500_error";
+            }
+            else if (statusCode == HttpStatus.METHOD_NOT_ALLOWED.value() || statusCode == HttpStatus.FORBIDDEN.value()) {
                 return "redirect:/";
             }
         }
         return "error";
     }
 
-//    @Override
-//    public String getErrorPath() {
-//        return null;
-//    }
+
 }
