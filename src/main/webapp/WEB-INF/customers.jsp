@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <%@ include file="utils/header_imports.jsp" %>
     <link rel="stylesheet" type="text/css" href="../css/index.css"/>
-    <link rel="icon" href="../images/logo.png"/>
+    <link rel="icon" href="../images/logo_deliverit.png"/>
     <title>Deliverit</title>
 
 </head>

@@ -8,7 +8,7 @@
     <link rel="icon" href="../images/login-img.png"/>
     <%@ include file="utils/header_imports.jsp" %>
     <link rel="stylesheet" type="text/css" href="../css/index.css"/>
-    <link rel="icon" href="../images/header_logo.png"/>
+    <link rel="icon" href="../images/logo_deliverit.png"/>
     <title>Deliverit</title>
 
 </head>
