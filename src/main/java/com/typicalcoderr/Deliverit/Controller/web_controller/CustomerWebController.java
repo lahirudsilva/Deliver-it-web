@@ -50,12 +50,14 @@ public class CustomerWebController {
         try {
             customerService.registerCustomer(dto);
             redirectAttributes.addFlashAttribute("success", "Account created successfully.Please login! ");
+            mv.setViewName("redirect:/login");
 
         } catch (DeliveritException e) {
             redirectAttributes.addFlashAttribute("errors", new APIException(e.getMessage()).getMessage());
+            mv.setViewName("redirect:/register");
         }
 
-        mv.setViewName("redirect:/register");
+
 
 
         return mv;
