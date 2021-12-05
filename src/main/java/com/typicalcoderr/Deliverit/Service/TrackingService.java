@@ -8,11 +8,13 @@ import com.typicalcoderr.Deliverit.domain.Shipment;
 import com.typicalcoderr.Deliverit.domain.Tracking;
 import com.typicalcoderr.Deliverit.dto.ShipmentDto;
 import com.typicalcoderr.Deliverit.dto.TrackingDto;
+import com.typicalcoderr.Deliverit.enums.ShipmentStatusType;
 import com.typicalcoderr.Deliverit.enums.TrackingStatusType;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -98,5 +100,36 @@ public class TrackingService {
         return dto;
 
 
+    }
+
+    @Transactional
+    public Tracking ToggleStatustoInWarehouse(int shipmentId) throws DeliveritException {
+
+         Tracking tracking =  trackingRepository.findTrackingsByShipment_ShipmentId(shipmentId);
+
+
+        tracking.setShipmentStatus(TrackingStatusType.IN_WAREHOUSE.getType());
+        tracking.setUpdatedAt(Instant.now());
+        return trackingRepository.save(tracking);
+
+    }
+
+    @Transactional
+    public Tracking ToggleStatustoOutForDelivery(int shipmentId) throws DeliveritException {
+        Tracking tracking =  trackingRepository.findTrackingsByShipment_ShipmentId(shipmentId);
+
+        tracking.setShipmentStatus(TrackingStatusType.OUT_FOR_DELIVERY.getType());
+        tracking.setUpdatedAt(Instant.now());
+        return trackingRepository.save(tracking);
+
+    }
+
+    public Tracking ToggleStatustoDelivered(int shipmentId) throws  DeliveritException{
+
+        Tracking tracking =  trackingRepository.findTrackingsByShipment_ShipmentId(shipmentId);
+
+        tracking.setShipmentStatus(TrackingStatusType.DELIVERED.getType());
+        tracking.setUpdatedAt(Instant.now());
+        return trackingRepository.save(tracking);
     }
 }

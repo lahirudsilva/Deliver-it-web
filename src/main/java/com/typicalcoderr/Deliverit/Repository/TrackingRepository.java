@@ -1,5 +1,6 @@
 package com.typicalcoderr.Deliverit.Repository;
 
+import com.typicalcoderr.Deliverit.domain.DriverDetails;
 import com.typicalcoderr.Deliverit.domain.Shipment;
 import com.typicalcoderr.Deliverit.domain.Tracking;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,9 @@ import java.util.Optional;
 @Repository
 public interface TrackingRepository extends JpaRepository<Tracking,Integer> {
     Tracking findTrackingsByShipment(Shipment shipment);
+    List <Tracking> findTrackingsByDriverDetails_DriverId(String driverId);
+    List <Tracking> findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(String status, String driverId);
+    Tracking findTrackingsByShipment_ShipmentId(Integer shipmentId);
+    List <Tracking> findTrackingsByDriverDetails_DriverIdAndShipmentStatusNotLike(String driverId, String shipmentStatus);
+
 }
