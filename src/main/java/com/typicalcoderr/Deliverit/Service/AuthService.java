@@ -17,8 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 /**
@@ -52,7 +52,7 @@ public class AuthService {
 
     }
 
-    @Transactional
+   @Transactional
     public SimpleMessageDto changePassword(ChangePasswordRequest request) throws DeliveritException {
 
         //User object from security context holder to obtain current user
