@@ -1,23 +1,23 @@
 package com.typicalcoderr.Deliverit.Service;
 
-import com.typicalcoderr.Deliverit.Repository.ShipmentRepository;
-import com.typicalcoderr.Deliverit.Repository.UserRepository;
-import com.typicalcoderr.Deliverit.Repository.WarehouseRepository;
-import com.typicalcoderr.Deliverit.domain.Shipment;
-import com.typicalcoderr.Deliverit.domain.User;
-import com.typicalcoderr.Deliverit.domain.Warehouse;
+import com.typicalcoderr.Deliverit.Repository.*;
+import com.typicalcoderr.Deliverit.domain.*;
 import com.typicalcoderr.Deliverit.dto.ShipmentDto;
 import com.typicalcoderr.Deliverit.enums.ShipmentStatusType;
+import com.typicalcoderr.Deliverit.enums.TrackingStatusType;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,12 +31,16 @@ public class ShipmentService {
     private final UserRepository userRepository;
     private final ShipmentRepository shipmentRepository;
     private  final WarehouseRepository warehouseRepository;
+    private final DriverDetailsRepository driverDetailsRepository;
+    private final TrackingRepository trackingRepository;
 
     @Autowired
-    public ShipmentService(UserRepository userRepository, ShipmentRepository shipmentRepository, WarehouseRepository warehouseRepository) {
+    public ShipmentService(UserRepository userRepository, ShipmentRepository shipmentRepository, WarehouseRepository warehouseRepository, DriverDetailsRepository driverDetailsRepository, TrackingRepository trackingRepository) {
         this.userRepository = userRepository;
         this.shipmentRepository = shipmentRepository;
         this.warehouseRepository = warehouseRepository;
+        this.driverDetailsRepository = driverDetailsRepository;
+        this.trackingRepository = trackingRepository;
     }
 
 
@@ -62,6 +66,7 @@ public class ShipmentService {
         shipments.setDescription(dto.getDescription());
         shipments.setUser(user);
         shipments.setWarehouse(warehouse);
+        shipments.setReceiverName(dto.getReceiverName());
 
         return shipmentRepository.save(shipments);
 
@@ -155,4 +160,188 @@ public class ShipmentService {
     }
 
 
+    @Transactional
+    public List<ShipmentDto> getAllShipmentsForDiver() throws DeliveritException {
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy").withZone(ZoneId.systemDefault());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //Find user from database
+        Optional<User> userOptional = userRepository.findById(auth.getName());
+        User driver = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+
+//        User driver = userRepository.findUserByEmail(getUsername()).orElseThrow(() -> new DeliveritException("user not found!"));
+        DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
+        String _driverId = driverDetails.getDriverId();
+
+
+        List<ShipmentDto> list = new ArrayList<>();
+        for (Tracking tracking : trackingRepository.findTrackingsByDriverDetails_DriverIdAndShipmentStatusNotLike(_driverId, TrackingStatusType.DELIVERED.getType())){
+            ShipmentDto dto = new ShipmentDto();
+
+
+            dto.setShipmentId(tracking.getShipment().getShipmentId());
+            dto.setArrival(DATE_TIME_FORMATTER.format(tracking.getShipment().getDropOffDate()));
+            dto.setPickupLocation(tracking.getShipment().getPickupLocation());
+            dto.setDropOffLocation(tracking.getShipment().getDropOffLocation());
+            dto.setPickUp(DATE_TIME_FORMATTER.format(tracking.getShipment().getPickUpDate()));
+            dto.setReceiverContactNumber(tracking.getShipment().getContactNumber());
+            list.add(dto);
+
+        }
+        return list;
+
+    }
+
+    public List<ShipmentDto> getAllPickupDeliveries() throws DeliveritException{
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy").withZone(ZoneId.systemDefault());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //Find user from database
+        Optional<User> userOptional = userRepository.findById(auth.getName());
+        User driver = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+
+        DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
+        String _driverId = driverDetails.getDriverId();
+
+        List<ShipmentDto> list = new ArrayList<>();
+        for (Tracking tracking : trackingRepository.findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(TrackingStatusType.PICKUP_IN_PROGRESS.getType(), _driverId)){
+            ShipmentDto dto = new ShipmentDto();
+
+            dto.setSenderFirstName(tracking.getShipment().getUser().getFirstName());
+            dto.setSenderLastName(tracking.getShipment().getUser().getLastName());
+            dto.setPickupLocation(tracking.getShipment().getPickupLocation());
+            dto.setSenderContactNumber(tracking.getShipment().getUser().getContactNumber());
+            dto.setShipmentId(tracking.getShipment().getShipmentId());
+            dto.setDescription(tracking.getShipment().getDescription());
+            dto.setEstimatedPrice(tracking.getShipment().getEstimatedPrice());
+            dto.setPickUp(DATE_TIME_FORMATTER.format(tracking.getShipment().getPickUpDate()));
+            list.add(dto);
+        }
+        return list;
+
+
+
+    }
+
+    public List<ShipmentDto> getAllInWarehouseDeliveries() throws DeliveritException{
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy").withZone(ZoneId.systemDefault());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //Find user from database
+        Optional<User> userOptional = userRepository.findById(auth.getName());
+        User driver = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+
+        DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
+        String _driverId = driverDetails.getDriverId();
+
+        List<ShipmentDto> list = new ArrayList<>();
+        for(Tracking tracking : trackingRepository.findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(TrackingStatusType.IN_WAREHOUSE.getType(), _driverId)){
+            ShipmentDto dto = new ShipmentDto();
+
+            dto.setShipmentId(tracking.getShipment().getShipmentId());
+            dto.setWarehouseLocation(tracking.getShipment().getWarehouse().getLocation());
+            dto.setDropOffLocation(tracking.getShipment().getDropOffLocation());
+            dto.setDescription(tracking.getShipment().getDescription());
+            dto.setEstimatedPrice(tracking.getShipment().getEstimatedPrice());
+            dto.setArrival(DATE_TIME_FORMATTER.format(tracking.getShipment().getDropOffDate()));
+            list.add(dto);
+
+
+        }
+        return list;
+    }
+
+    public List<ShipmentDto> getAllPackagesForDeliveries() throws DeliveritException {
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy").withZone(ZoneId.systemDefault());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //Find user from database
+        Optional<User> userOptional = userRepository.findById(auth.getName());
+        User driver = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+
+        DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
+        String _driverId = driverDetails.getDriverId();
+
+        List<ShipmentDto> list = new ArrayList<>();
+        for(Tracking tracking : trackingRepository.findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(TrackingStatusType.OUT_FOR_DELIVERY.getType(), _driverId)){
+            ShipmentDto dto = new ShipmentDto();
+
+            dto.setReceiverName(tracking.getShipment().getReceiverName());
+            dto.setShipmentId(tracking.getShipment().getShipmentId());
+            dto.setReceiverContactNumber(tracking.getShipment().getContactNumber());
+            dto.setDropOffLocation(tracking.getShipment().getDropOffLocation());
+            dto.setDescription(tracking.getShipment().getDescription());
+            dto.setEstimatedPrice(tracking.getShipment().getEstimatedPrice());
+            dto.setArrival(DATE_TIME_FORMATTER.format(tracking.getShipment().getDropOffDate()));
+            list.add(dto);
+        }
+        return list;
+
+    }
+
+    public List<ShipmentDto> getPastDeliveries() throws DeliveritException{
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy").withZone(ZoneId.systemDefault());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //Find user from database
+        Optional<User> userOptional = userRepository.findById(auth.getName());
+        User driver = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+
+        DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
+        String _driverId = driverDetails.getDriverId();
+
+        List<ShipmentDto> list = new ArrayList<>();
+        for(Tracking tracking : trackingRepository.findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(TrackingStatusType.DELIVERED.getType(), _driverId)){
+            ShipmentDto dto = new ShipmentDto();
+
+            dto.setSenderFirstName(tracking.getShipment().getUser().getFirstName());
+            dto.setSenderLastName(tracking.getShipment().getUser().getLastName());
+            dto.setReceiverName(tracking.getShipment().getReceiverName());
+            dto.setShipmentId(tracking.getShipment().getShipmentId());
+            dto.setReceiverContactNumber(tracking.getShipment().getContactNumber());
+            dto.setDropOffLocation(tracking.getShipment().getDropOffLocation());
+            dto.setPickupLocation(tracking.getShipment().getPickupLocation());
+            dto.setDescription(tracking.getShipment().getDescription());
+            dto.setEstimatedPrice(tracking.getShipment().getEstimatedPrice());
+            dto.setCreatedAt(DATE_TIME_FORMATTER.format(tracking.getUpdatedAt()));
+            list.add(dto);
+        }
+        return list;
+
+
+    }
+
+    public List<ShipmentDto> getCustomerRecentShipments()  throws  DeliveritException{
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy").withZone(ZoneId.systemDefault());
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //Find user from database
+        Optional<User> userOptional = userRepository.findById(auth.getName());
+        User customer = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+
+        List<ShipmentDto> list = new ArrayList<>();
+        for (Shipment shipment : shipmentRepository.findAllByUserIsOrderByCreatedAtDesc(customer)){
+            ShipmentDto dto = new ShipmentDto();
+            dto.setShipmentId(shipment.getShipmentId());
+            dto.setCreatedAt(DATE_TIME_FORMATTER.format(shipment.getCreatedAt()));
+            dto.setDropOffLocation(shipment.getDropOffLocation());
+            dto.setStatus(shipment.getStatus());
+            list.add(dto);
+        }
+        return list;
+
+
+    }
 }
