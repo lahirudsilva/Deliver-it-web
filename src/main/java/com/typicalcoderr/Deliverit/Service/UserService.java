@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -60,6 +60,32 @@ public class UserService {
 
     }
 
+    @Transactional
+    public UserDto getUserDetais() throws DeliveritException{
+
+
+        //User object from security context holder to obtain current user
+        org.springframework.security.core.userdetails.User loggedUser = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        //If student is not found
+        com.typicalcoderr.Deliverit.domain.User user = userRepository.findById(loggedUser.getUsername()).orElseThrow(()->new DeliveritException("Student not found"));
+
+
+
+
+
+       UserDto dto = mapDto(user);
+        System.out.println(dto);
+
+
+        return dto;
+
+
+
+
+    }
+
+
 
 
     public String getName() throws DeliveritException{
@@ -69,6 +95,18 @@ public class UserService {
         com.typicalcoderr.Deliverit.domain.User _user = userRepository.findUserByEmail(user.getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
 
         return _user.getFirstName();
+    }
+
+    @Transactional
+    public UserDto getLoggedIn() throws DeliveritException{
+        //User object from security context holder to obtain current user
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //If customer is not found
+        com.typicalcoderr.Deliverit.domain.User _user = userRepository.findUserByEmail(user.getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
+        System.out.println(_user);
+        UserDto userDto = mapDto(_user);
+        return userDto;
+
     }
 
 
@@ -93,8 +131,9 @@ public class UserService {
     private UserDto mapDto(User customer){
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy").withZone(ZoneId.systemDefault());
 
-        return new UserDto(customer.getWarehouse().getWarehouseNumber(),customer.getEmail(), customer.getFirstName(), customer.getLastName(), customer.getUserRole(),customer.getCity() ,customer.getContactNumber(), DATE_TIME_FORMATTER.format(customer.getJoinedOn()));
+        return new UserDto(customer.getEmail(),customer.getFirstName(), customer.getLastName(),customer.getContactNumber(),customer.getUserRole(),DATE_TIME_FORMATTER.format(customer.getJoinedOn()),  customer.getCity() ,customer.getWarehouse().getWarehouseNumber() );
     }
+
 
 
 }
