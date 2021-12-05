@@ -4,6 +4,8 @@ import com.typicalcoderr.Deliverit.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -24,6 +26,7 @@ public class ShipmentDto {
     private String dropOffLocation;
     private String senderEmail;
     private String receiverEmail;
+    private String senderContactNumber;
     private String receiverContactNumber;
     private LocalDate pickUpDate;
     private LocalDate dropOffDate;
@@ -35,7 +38,16 @@ public class ShipmentDto {
     private String description;
     private String warehouseLocation;
     private String warehouseNumber;
+    private String receiverName;
+    private String senderFirstName;
+    private String senderLastName;
     private User user;
+
+    //mobile
+    @NonNull
+    private String arrival;
+    @NonNull
+    private String pickUp;
 
 
 

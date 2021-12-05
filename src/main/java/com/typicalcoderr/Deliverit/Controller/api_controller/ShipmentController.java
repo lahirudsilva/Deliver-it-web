@@ -27,7 +27,7 @@ public class ShipmentController {
     private final ShipmentService shipmentService;
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    @PostMapping("/add-package")
+    @PostMapping("/addPackage")
     public ResponseEntity<Object> addShipment(@RequestBody ShipmentDto dto){
         try {
             Shipment result = shipmentService.addShipment(dto);
@@ -39,6 +39,68 @@ public class ShipmentController {
 
 
     }
+
+    @PreAuthorize("hasRole('DRIVER')")
+    @GetMapping("/driver/shipmentsDetails")
+    public ResponseEntity<Object> getAcceptedShipmentsForDriver(){
+        try{
+//            System.out.println(shipmentService.getAllShipmentsForDiver().size());
+            List<ShipmentDto> shipmentDto = shipmentService.getAllShipmentsForDiver();
+            return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
+
+
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasRole('DRIVER')")
+    @GetMapping("/getPickupDeliveries")
+    public ResponseEntity<Object> getAllPickupDeliveries(){
+        try {
+            List<ShipmentDto> shipmentDto = shipmentService.getAllPickupDeliveries();
+            return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasRole('DRIVER')")
+    @GetMapping("/getInWarehouseDeliveries")
+    public ResponseEntity<Object> getInWarehouseDeliveries(){
+        try{
+
+            List<ShipmentDto> shipmentDto = shipmentService.getAllInWarehouseDeliveries();
+            return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasRole('DRIVER')")
+    @GetMapping("/getPackagesForDelivery")
+    public ResponseEntity<Object> getPackagesForDelivery(){
+        try{
+            List<ShipmentDto> shipmentDto = shipmentService.getAllPackagesForDeliveries();
+            return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasRole('DRIVER')")
+    @GetMapping("/getAllPastRides")
+    public ResponseEntity<Object> getPastDeliveriesForDriver(){
+        try{
+            List<ShipmentDto> shipmentDto = shipmentService.getPastDeliveries();
+            return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
+
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 
 //    @PreAuthorize("hasRole('ADMIN')")
 //    @GetMapping("/home-admin")

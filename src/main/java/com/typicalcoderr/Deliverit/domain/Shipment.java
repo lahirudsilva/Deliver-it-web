@@ -1,9 +1,6 @@
 package com.typicalcoderr.Deliverit.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -34,6 +31,10 @@ public class Shipment {
     @Email
     @NotEmpty(message = "receiver email is required")
     private String receiverEmail;
+
+    @NotEmpty(message = "receiver name is required")
+    @Column(nullable = false)
+    private String receiverName;
 
     @NotEmpty(message = "Phone number is required")
     @Column(nullable = false)

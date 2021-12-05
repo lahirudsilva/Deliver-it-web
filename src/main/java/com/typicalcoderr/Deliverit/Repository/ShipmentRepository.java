@@ -13,4 +13,5 @@ public interface ShipmentRepository extends JpaRepository<Shipment,Integer> {
     List<Shipment> findAllByStatusIsLikeOrderByCreatedAtDesc(String status);
     List<Shipment> findAllByUserIsOrderByCreatedAtDesc(User user);
     List<Shipment> findAllByStatusAndWarehouseWarehouseNumberLikeOrderByCreatedAtDesc(String status, String warehouseNumber);
+
 }
