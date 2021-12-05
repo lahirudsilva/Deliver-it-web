@@ -1,5 +1,6 @@
 package com.typicalcoderr.Deliverit.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,7 +54,7 @@ public class DriverDetails {
     private Integer noOfAssignedRides;
 
     //user
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "userId", referencedColumnName = "email")
     private User user;
 

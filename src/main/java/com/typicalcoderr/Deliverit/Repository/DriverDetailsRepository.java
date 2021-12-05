@@ -21,6 +21,8 @@ public interface DriverDetailsRepository extends JpaRepository<DriverDetails, St
     Optional <DriverDetails> findByVehicleNumber(String vehicleNumber);
     List <DriverDetails> findAllByStatusIsLikeAndUser_WarehouseWarehouseNumberLike(String status, String warehouseNumber);
     List <DriverDetails> findDriverDetailsByUser_Warehouse_WarehouseNumberLike(String warehouseNumber);
+    DriverDetails findDriverDetailsByUser(User user);
+    DriverDetails findDriverDetailsByUser_Email(String email);
 //    List <DriverDetails> findAllByStatusIsLikeAndNoOfAssignedRidesLessThanEqualAndUser_WarehouseWarehouseNumberLike(String status, Integer noOfRides, String warehouseNumber);
 
 }

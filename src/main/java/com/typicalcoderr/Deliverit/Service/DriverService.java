@@ -11,10 +11,11 @@ import com.typicalcoderr.Deliverit.dto.WarehouseDto;
 import com.typicalcoderr.Deliverit.enums.DriverStatusType;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -162,4 +163,53 @@ public class DriverService {
         return _user.getEmail();
     }
 
+
+    public DriverDetailsDto getDriverDetails() throws DeliveritException {
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//
+//        //Find user from database
+//        Optional<User> userOptional = userRepository.findById(auth.getName());
+//        User driver = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+        User driver = userRepository.findUserByEmail(getUsername()).orElseThrow(() -> new DeliveritException("user not found!"));
+
+
+        DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
+
+        DriverDetailsDto dto = new DriverDetailsDto();
+        dto.setDriverId(driverDetails.getDriverId());
+        dto.setWarehouseLocation(driverDetails.getUser().getWarehouse().getLocation());
+        dto.setDriverFirstName(driverDetails.getUser().getFirstName());
+        dto.setDriverLastName(driverDetails.getUser().getLastName());
+        dto.setStatus(driverDetails.getStatus());
+        dto.setDriverEmail(driverDetails.getUser().getEmail());
+        dto.setContactNumber(driverDetails.getUser().getContactNumber());
+        dto.setVehicleNumber(driverDetails.getVehicleNumber());
+        dto.setNIC(driverDetails.getNIC());
+        dto.setRegisteredOn(DATE_TIME_FORMATTER.format(driverDetails.getRegisteredOn()));
+        dto.setNoOfRidesToGo(driverDetails.getNoOfAssignedRides());
+        return dto;
+
+
+    }
+
+    public DriverDetails updatedriverAvailablity() throws DeliveritException {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        //Find user from database
+        Optional<User> userOptional = userRepository.findById(auth.getName());
+        User driver = userOptional.orElseThrow(() -> new DeliveritException("User not found"));
+
+//        User driver = userRepository.findUserByEmail(getUsername()).orElseThrow(() -> new DeliveritException("user not found!"));
+        DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
+
+        int num = driverDetails.getNoOfAssignedRides();
+        driverDetails.setNoOfAssignedRides(num - 1);
+        driverDetails.setStatus(DriverStatusType.AVAILABLE.getType());
+
+        return driverDetailsRepository.save(driverDetails);
+
+    }
 }
