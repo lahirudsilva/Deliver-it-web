@@ -117,4 +117,26 @@ public class CustomerService {
 
         return _user.getEmail();
     }
+
+    public UserDto getLoggedInUser() throws DeliveritException{
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
+
+        //User object from security context holder to obtain current user
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //If customer is not found
+        com.typicalcoderr.Deliverit.domain.User _user = userRepository.findUserByEmail(user.getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
+
+        UserDto dto = new UserDto();
+        dto.setFirstName(_user.getFirstName());
+        dto.setLastName(_user.getLastName());
+        dto.setEmail(_user.getEmail());
+        dto.setContactNumber(_user.getContactNumber());
+        dto.setUserRole(_user.getUserRole());
+        dto.setCity(_user.getCity());
+        dto.setJoinedOn(DATE_TIME_FORMATTER.format(_user.getJoinedOn()));
+
+        return dto;
+
+
+    }
 }
