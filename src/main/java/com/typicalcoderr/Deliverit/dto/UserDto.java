@@ -40,4 +40,14 @@ public class UserDto {
         this.city = city;
         this.warehouseNumber = warehouseNumber;
     }
+
+    public UserDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn, String city) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.contactNumber = contactNumber;
+        this.userRole = userRole;
+        this.joinedOn = joinedOn;
+        this.city = city;
+    }
 }
