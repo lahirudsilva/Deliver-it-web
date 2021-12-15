@@ -16,12 +16,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class FacadeController {
 
     @GetMapping("/")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPERVISOR')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPERVISOR', 'DRIVER')")
     public ModelAndView sendUserHome(){
         boolean isAdmin = UserUtilities.hasRole("ROLE_ADMIN");
         boolean isCustomer = UserUtilities.hasRole("ROLE_CUSTOMER");
         boolean isSupervisor  = UserUtilities.hasRole("ROLE_SUPERVISOR");
-//        boolean isDriver = UserUtilities.hasRole("ROLE_DRIVER");
+        boolean isDriver = UserUtilities.hasRole("ROLE_DRIVER");
 
         ModelAndView mv = new ModelAndView();
 
@@ -31,6 +31,8 @@ public class FacadeController {
             mv.setViewName("redirect:/home-customer");
         }else if (isSupervisor){
             mv.setViewName("redirect:/home-supervisor");
+        }else if (isDriver){
+            mv.setViewName("redirect:/home-driver");
         }
         return mv;
     }
