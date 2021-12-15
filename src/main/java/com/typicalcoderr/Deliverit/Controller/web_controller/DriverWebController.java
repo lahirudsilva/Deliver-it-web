@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -39,6 +40,24 @@ public class DriverWebController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("drivers");
         mv.addObject("driverList", driverService.getAllDrivers());
+        return mv;
+    }
+
+    @GetMapping("/deliveries")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ModelAndView getTodayDeliveries() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("deliveries");
+        try {
+            mv.addObject("pickupList", shipmentService.getAllPickupDeliveries());
+            mv.addObject("inWarehouseList", shipmentService.getAllInWarehouseDeliveries());
+            mv.addObject("onDeliveryList", shipmentService.getAllPackagesForDeliveries());
+
+        }catch (DeliveritException e){
+            mv.addObject("error", new APIException(e.getMessage()));
+            e.printStackTrace();
+        }
+
         return mv;
     }
 
@@ -119,7 +138,7 @@ public class DriverWebController {
 
     @PostMapping("/assign-driver")
     @PreAuthorize("hasRole('SUPERVISOR')")
-    public ModelAndView assignDriver(@RequestParam String pickupDate, String dropoffDate, String driverId, String shipmentId , RedirectAttributes redirectAttributes) {
+    public ModelAndView assignDriver(@RequestParam LocalDate pickupDate, LocalDate dropoffDate, String driverId, String shipmentId , RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
 
 
@@ -127,8 +146,8 @@ public class DriverWebController {
         try {
             ShipmentDto shipmentDto = new ShipmentDto();
             shipmentDto.setShipmentId(Integer.parseInt(shipmentId));
-            shipmentDto.setPickUpDate(LocalDate.parse(pickupDate));
-            shipmentDto.setDropOffDate(LocalDate.parse(dropoffDate));
+            shipmentDto.setPickUpDate(pickupDate);
+            shipmentDto.setDropOffDate(dropoffDate);
 
             TrackingDto trackingDto = new TrackingDto();
             trackingDto.setDriverId(driverId);
