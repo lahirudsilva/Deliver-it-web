@@ -27,7 +27,7 @@
                 <div class="navbar-nav">
                     <a class="nav-item nav-link ${param.page == "home" ? "active" : null}" href="/">Home</a>
                     <a class="nav-item nav-link ${param.page == "shipments" ? "active" : null}"
-                       href="/shipments">Shipments</a>
+                       href="/shipmentsForWarehouse">Shipments</a>
                     <a class="nav-item nav-link ${param.page == "drivers" ? "active" : null}" href="/driversForWarehouse">Drivers</a>
 <%--                    <a class="nav-item nav-link ${param.page == "customers" ? "active" : null}" href="/customers">Customers</a>--%>
 <%--                    <a class="nav-item nav-link ${param.page == "warehouses" ? "active" : null}" href="/warehouses">Warehouses</a>--%>
@@ -46,6 +46,19 @@
             </div>
 
         </div>
+        </sec:authorize>
+
+        <sec:authorize access="hasRole('DRIVER')">
+            <div class="collapse navbar-collapse" id="navbarNav2">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link ${param.page == "home" ? "active" : null}" href="/">Home</a>
+                    <a class="nav-item nav-link ${param.page == "deliveries" ? "active" : null}" href="/deliveries">Deliveries</a>
+                    <a class="nav-item nav-link ${param.page == "tracking" ? "active" : null}" href="/searchTrackingNumber">Past Rides</a>
+<%--                    <a class="nav-item nav-link ${param.page == "inquires" ? "active" : null}"--%>
+<%--                       href="/myInquires">Inquires</a>--%>
+                </div>
+
+            </div>
         </sec:authorize>
 
         <div>
