@@ -51,24 +51,29 @@
                             <sec:authorize access="hasRole('SUPERVISOR')">
                             <div class="form-row form-row-modal mb-3">
                                 <label id="SelectPickupDate"> Select Pickup Date : </label>
-                                <select name="pickupDate" id="datemenu1" class="info" required>
-                                    <option value="" selected disabled hidden>Select a Date</option>
-                                </select>
+<%--                                <select name="pickupDate" id="datemenu1" class="info"--%>
+<%--                                        required--%>
+<%--                                >--%>
+<%--                                    <option value="" selected disabled hidden>Select a Date</option>--%>
+<%--                                </select>--%>
+                                <input name="pickupDate" id="datefield" type='date' min='1899-01-01' max='2000-13-13'></input>
                             </div>
 
                             <div class="form-row form-row-modal mb-3">
                                 <label id="SelectDropoffDate"> Select Dropoff Date : </label>
-                                <select name="dropoffDate" id="datemenu2" class="info" required>
-                                    <option value="" selected disabled hidden>Select a Date</option>
-                                </select>
+<%--                                <select name="dropoffDate" id="datemenu2" class="info"--%>
+<%--                                        required>--%>
+<%--                                    <option value="" selected disabled hidden>Select a Date</option>--%>
+<%--                                </select>--%>
+                                <input name="dropoffDate" id="datefield1" type='date' min='1899-01-01' max='2000-13-13'></input>
                             </div>
 
 
                             <div class="form-row form-row-modal">
                                 <label for="inputSelectDriver${requests.getShipmentId()}">Available Drivers
                                     :</label>
-                                <select class="custom-select form-control select-filter"
-                                        id="inputSelectDriver${requests.getShipmentId()}" name="driverId" required>
+                                <select required class="custom-select form-control select-filter"
+                                        id="inputSelectDriver${requests.getShipmentId()}" name="driverId">
                                     <c:forEach var="driver" items="${availableDrivers}">
                                         <option value="" selected disabled hidden>Choose a driver..</option>
                                         <option value="${driver.getDriverId()}"> ${driver.getDriverFirstName()} ${driver.getDriverLastName()}</option>
@@ -101,34 +106,55 @@
 
 
 <script>
-    //set pickup & dropoff date drop down
-    function formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+    // $( "#datepicker" ).datepicker({ minDate: new Date()});
+    //
+    //
+    // //set pickup & dropoff date drop down
+    // function formatDate(date) {
+    //     var d = new Date(date),
+    //         month = '' + (d.getMonth() + 1),
+    //         day = '' + d.getDate(),
+    //         year = d.getFullYear();
+    //
+    //     if (month.length < 2)
+    //         month = '0' + month;
+    //     if (day.length < 2)
+    //         day = '0' + day;
+    //
+    //     return [year, month, day].join('-');
+    // }
+    // var curr = new Date;
+    // var first = curr.getDate()
+    // var firstday = (new Date(curr.setDate(first))).toString();
+    // var options = "";
+    // let i = 0
+    // for (i; i < 15; i++) {
+    //     if (i === 15) {
+    //         break;
+    //     }
+    //     var next = new Date(curr.getTime());
+    //     next.setDate(first + i);
+    //     options += '<option style="color:black;">' + formatDate((next.toString())) + '</option>';
+    //
+    // }
+    // $("#datemenu1").append(options);
+    // $("#datemenu2").append(options);
 
-        return [year, month, day].join('-');
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    if(dd<10){
+        dd='0'+dd
+    }
+    if(mm<10){
+        mm='0'+mm
     }
 
-    var curr = new Date;
-    var first = curr.getDate()
-    var firstday = (new Date(curr.setDate(first))).toString();
-    var options = "";
-    let i = 0
-    for (i; i < 15; i++) {
-        if (i === 15) {
-            break;
-        }
-        var next = new Date(curr.getTime());
-        next.setDate(first + i);
-        options += '<option style="color:black;">' + formatDate((next.toString())) + '</option>';
-    }
-    $("#datemenu1").append(options);
-    $("#datemenu2").append(options);
+    today = yyyy+'-'+mm+'-'+dd;
+    document.getElementById("datefield").setAttribute("min", today);
+    document.getElementById("datefield1").setAttribute("min", today);
+
+
 </script>
