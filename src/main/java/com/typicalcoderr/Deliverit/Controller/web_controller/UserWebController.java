@@ -99,7 +99,7 @@ public class UserWebController {
         mv.setViewName("customerHome");
 
         try {
-            mv.addObject("packageList", customerService.getAllMyPackages());
+            mv.addObject("packageList", customerService.getMyRecentPackages());
             mv.addObject("name", userService.getName());
 
 

@@ -232,6 +232,13 @@
 
 
                     </div>
+<%--                        <button type="button" class="btn btn-outline-dark" style="margin-left: 70%; margin-top: 10px; padding: 10px">Make an inquiry</button>--%>
+                    <button type="button" class="btn btn-outline-dark btn-dispute" data-bs-toggle="modal"
+                            data-bs-target="#MakeInquiryModal${trackings.getShipmentId()}" style="margin-left: 70%; margin-top: 10px; padding: 10px"></i>Make an inquiry</button>
+
+
+
+
 
 
                 </div>
@@ -258,5 +265,9 @@
 
 
 </body>
-
+<%@ include file="modals/makeInquiry.jsp" %>
+<div style="margin-top: 150px">
+<!--Footer-->
+<%@ include file="utils/footer.jsp" %>
+</div>
 </html>

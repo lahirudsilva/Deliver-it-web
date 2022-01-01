@@ -30,7 +30,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label"> <strong>Message:</strong></label>
-                        <textarea class="form-control" id="message-text" rows="5" required></textarea>
+                        <textarea class="form-control" id="message-text" rows="5" placeholder="Reason here" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-success" style="margin-left: 170px;">Send Response</button>
                 </form>

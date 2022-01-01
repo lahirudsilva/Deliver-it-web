@@ -65,7 +65,7 @@ public class TrackingWebController {
 
 
     @GetMapping("/track-package")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN', 'SUPERVISOR')")
     public ModelAndView getTrackingDetails(@RequestParam Integer shipmentId){
         ModelAndView mv = new ModelAndView();
 

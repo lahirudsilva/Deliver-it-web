@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class WarehouseService {
     }
 
 
+    @Transactional
     public List<DriverDetailsDto> getAllDriversForWareHouse() throws DeliveritException {
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
         //get logged in user
@@ -94,6 +96,8 @@ public class WarehouseService {
     //get warehouse location
     public String getWarehouseLocation() throws DeliveritException{
         User supervisor = userRepository.findUserByEmail(getUsername()).orElseThrow(() -> new DeliveritException("user not found!"));
+        System.out.println(supervisor.getWarehouse().getLocation());
         return supervisor.getWarehouse().getLocation();
+
     }
 }

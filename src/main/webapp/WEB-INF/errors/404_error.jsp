@@ -10,7 +10,7 @@
     <%@ include file="../utils/header_imports.jsp" %>
     <%@ include file="../utils/script_imports.jsp" %>
     <link rel="stylesheet" type="text/css" href="../../css/error.css"/>
-    <link rel="icon" href="../../images/logo.png"/>
+    <link rel="icon" href="../images/logo_deliverit.png"/>
     <title>Deliverit</title>
 
 </head>

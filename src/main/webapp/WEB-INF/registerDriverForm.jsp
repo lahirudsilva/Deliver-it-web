@@ -61,7 +61,7 @@
                            pattern="[0-9]{10}" name="contactNumber" required>
                 </div>
                 <div class="mb-3 form-holder">
-                    <label for="exampleFormControlInput6" class="form-label">UserID</label>
+                    <label for="exampleFormControlInput6" class="form-label">DriverID</label>
                     <input type="text" class="form-control" id="exampleFormControlInput6" placeholder="eg:d002211"
                            pattern="[dD][0-9]{6}" name="driverId" required>
                 </div>

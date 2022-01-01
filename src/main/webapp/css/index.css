@@ -100,7 +100,12 @@ body {
 }
 
 .btn-in-add {
+    margin-left: 80px;
     width: 20%;
+}
+
+.btn-dispute {
+    width: 30%;
 }
 
 .btn-in-add-txt {
@@ -144,6 +149,8 @@ body {
     margin-top: 60px;
     margin-bottom: 100px;
 }
+
+
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

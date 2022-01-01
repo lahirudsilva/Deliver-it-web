@@ -45,8 +45,8 @@
         <div class="title-add">
             <h4 class="recent-packages-table title-in-add">Pending Delivery Requests</h4>
             <sec:authorize access="hasRole('SUPERVISOR')">
-            <h6 class="recent-packages-table badge-in-add" ><strong> Warehouse </strong> <span
-                    class="badge bg-success"> ${warehouseLocation}</span></h6>
+                <h6 class="recent-packages-table badge-in-add"><strong> Warehouse </strong> <span
+                        class="badge bg-success"> ${warehouseLocation}</span></h6>
             </sec:authorize>
         </div>
         <hr class="table-hr">
@@ -85,6 +85,7 @@
                 <c:url value="#" var="url">
                     <c:param name="shipmentId" value="${requests.getShipmentId()}"/>
                 </c:url>
+
                 <tr>
                     <td>${requests.getSenderEmail()}</td>
                     <td>${requests.getPickupLocation()}</td>
@@ -93,7 +94,8 @@
                     <td>${requests.getCreatedAt()}</td>
                     <td>
                         <button type="button" title="Accept Request" class="btn btn-outline-success btn-view"
-                                data-bs-toggle="modal" data-bs-target="#AssignDriverModal${requests.getShipmentId()}">
+                                data-bs-toggle="modal"
+                                data-bs-target="#AssignDriverModal${requests.getShipmentId()}">
                             View
                         </button>
                     </td>
@@ -103,6 +105,7 @@
                     <%@ include file="modals/rejectShipment.jsp" %>
 
                 </tr>
+
 
             </c:forEach>
 

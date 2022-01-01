@@ -28,7 +28,7 @@ public class UserController {
     private UserService userService;
     private CustomerService customerService;
 
-    @PreAuthorize("hasAnyRole('DRIVER','CUSTOMER')")
+    @PreAuthorize("hasAnyRole('DRIVER','CUSTOMER', 'SUPERVISOR')")
     @GetMapping("/getProfile")
     public ResponseEntity<Object> getProfile(){
         try {
@@ -41,7 +41,7 @@ public class UserController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('DRIVER', 'CUSTOMER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('DRIVER', 'CUSTOMER', 'SUPERVISOR', 'ADMIN')")
     @GetMapping("getLoggedInUser")
     public ResponseEntity<Object> getLoggedInUser(){
         try {

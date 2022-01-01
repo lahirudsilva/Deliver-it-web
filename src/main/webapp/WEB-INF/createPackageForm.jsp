@@ -49,6 +49,11 @@
                        placeholder="Email" name="receiverEmail">
             </div>
             <div class="form-group form-holder">
+                <label for="exampleReceiverName1">Receiver Name</label>
+                <input type="text" class="form-control" id="exampleReceiverName1"
+                       placeholder="Receiver Name" name="receiverName">
+            </div>
+            <div class="form-group form-holder">
                 <label for="exampleInputPhNo1">Receiver Contact number</label>
                 <input type="tel" class="form-control" id="exampleInputPhNo1"
                        placeholder="Contact Number" name="receiverContactNumber" pattern="[0-9]{10}">
@@ -65,7 +70,7 @@
             <div class="row g-3" style=" padding: 10px;">
                 <div class="col-auto form-holder">
                     <label for="packageSize">Select package size</label>
-                    <select class="form-control" id="packageSize" name="packageSize" required>
+                    <select  class="form-select" aria-label="Default select example" id="packageSize" name="packageSize" required>
                         <option value="" selected disabled hidden>Choose...</option>
                         <option value="small">Small(16"x12"x12")</option>
                         <option value="medium">Medium(18"x18"x18")</option>
@@ -84,7 +89,7 @@
 
                 <div class="col-auto form-holder">
                     <label for="warehouseLocation">Select warehouse</label>
-                    <select class="form-control" id="warehouseLocation" name="warehouseNumber" required>
+                    <select  class="form-select" aria-label="Default select example" id="warehouseLocation" name="warehouseNumber" required>
                         <c:forEach var="warehouse" items="${warehouses}">
                         <option value="" selected disabled hidden>Choose closest warehouse for you...</option>
                         <option value="${warehouse.getWarehouseNumber()}"> ${warehouse.getLocation()}</option>

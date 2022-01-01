@@ -131,7 +131,7 @@ public class UserService {
     private UserDto mapDto(User customer){
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy").withZone(ZoneId.systemDefault());
 
-        return new UserDto(customer.getEmail(),customer.getFirstName(), customer.getLastName(),customer.getContactNumber(),customer.getUserRole(),DATE_TIME_FORMATTER.format(customer.getJoinedOn()),  customer.getCity() ,customer.getWarehouse().getWarehouseNumber() );
+        return new UserDto(customer.getEmail(),customer.getFirstName(), customer.getLastName(),customer.getContactNumber(),customer.getUserRole(),DATE_TIME_FORMATTER.format(customer.getJoinedOn()),  customer.getCity(), customer.getIsVerified(), customer.getIsBlackListed());
     }
 
 
