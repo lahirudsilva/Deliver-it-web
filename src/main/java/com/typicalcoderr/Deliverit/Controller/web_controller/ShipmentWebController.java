@@ -1,5 +1,6 @@
 package com.typicalcoderr.Deliverit.Controller.web_controller;
 
+import com.typicalcoderr.Deliverit.Service.CustomerService;
 import com.typicalcoderr.Deliverit.Service.EmailService;
 import com.typicalcoderr.Deliverit.Service.ShipmentService;
 import com.typicalcoderr.Deliverit.Service.WarehouseService;
@@ -31,6 +32,7 @@ public class ShipmentWebController {
     private final ShipmentService shipmentService;
     private final EmailService emailService;
     private final WarehouseService warehouseService;
+    private final CustomerService customerService;
 
 
     @GetMapping("/shipments")
@@ -39,6 +41,21 @@ public class ShipmentWebController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("shipments");
         mv.addObject("shipmentList", shipmentService.getAllOnGoingShipments());
+        return mv;
+
+    }
+
+    @GetMapping("/myPackages")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ModelAndView getAllMyShipments() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("myPackages");
+        try {
+            mv.addObject("myShipments", customerService.getAllMyPackages());
+        }catch (DeliveritException e){
+            e.printStackTrace();
+        }
+
         return mv;
 
     }
@@ -143,6 +160,21 @@ public class ShipmentWebController {
         mv.setViewName("redirect:/home-admin");
         return mv;
 
+    }
+
+    @PostMapping("/cancelPackage")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ModelAndView cancelPackage(@RequestParam Integer shipmentId,  RedirectAttributes redirectAttributes){
+        ModelAndView mv = new ModelAndView();
+
+        try {
+            shipmentService.cancelPendingPackage(shipmentId);
+            redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Successfully delivery request has been canceled!"));
+        }catch (DeliveritException e){
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
+        }
+        mv.setViewName("redirect:/home-customer");
+        return mv;
     }
 
 
