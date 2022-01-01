@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 
 @Data
@@ -17,12 +18,21 @@ public class Inquiry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer inquiryId;
+
+    @NotEmpty(message = "description is required")
+    @Column(nullable = false)
     private String description;
+
+    private String response;
+
     private Instant createdAt;
-    @ManyToOne
+
+    private String inquiryStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipmentId", referencedColumnName = "shipmentId")
     private Shipment shipment;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId", referencedColumnName = "email")
     private User user;
 

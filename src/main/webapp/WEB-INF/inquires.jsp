@@ -1,3 +1,6 @@
+<%@ page import="com.typicalcoderr.Deliverit.dto.InquiryDto" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -30,6 +33,19 @@
             <h4 class="recent-students-title title-in-add">Inquiries</h4>
         </div>
         <hr/>
+        <%
+            //If no lectures are present
+            List<InquiryDto> inq = new ArrayList<>();
+            try { inq = (List<InquiryDto>) request.getAttribute("inquiryList");}
+            catch(Exception e){e.printStackTrace();}
+            if (inq != null && inq.size() <= 0) {
+        %>
+        <div class="alert alert-secondary" role="alert">
+            No Inquires available for this day!
+        </div>
+        <%
+        } else {
+        %>
 
         <sec:authorize access="hasRole('CUSTOMER')">
             <c:forEach var="inquiry" items="${inquiryList}">
@@ -135,7 +151,7 @@
 
 
         </sec:authorize>
-
+        <% } %>
     </div>
 </div>
 

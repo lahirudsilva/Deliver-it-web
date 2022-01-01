@@ -21,7 +21,7 @@
 
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label"> <strong>Message:</strong></label>
-                        <textarea class="form-control" id="message-text" rows="5" placeholder="Reason here" name=message
+                        <textarea class="form-control" id="message-text" rows="5" placeholder="Question..." name=message
                                   required></textarea>
                     </div>
 

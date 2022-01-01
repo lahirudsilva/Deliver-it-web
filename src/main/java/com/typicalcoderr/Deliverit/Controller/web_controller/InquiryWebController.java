@@ -59,7 +59,13 @@ public class InquiryWebController {
     public ModelAndView allInquires() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("inquires");
-//        mv.addObject("shipmentList", inquiryService.getAllInquires());
+        try{
+            mv.addObject("inquiryList", inquiryService.getAllInquires());
+
+        }catch (DeliveritException e){
+            mv.addObject("error", new APIException(e.getMessage()));
+        }
+
         return mv;
     }
 
