@@ -1,13 +1,12 @@
 package com.typicalcoderr.Deliverit.Service;
 
 import com.typicalcoderr.Deliverit.Repository.DriverDetailsRepository;
+import com.typicalcoderr.Deliverit.Repository.TrackingRepository;
 import com.typicalcoderr.Deliverit.Repository.UserRepository;
-import com.typicalcoderr.Deliverit.Repository.WarehouseRepository;
 import com.typicalcoderr.Deliverit.domain.DriverDetails;
+import com.typicalcoderr.Deliverit.domain.Tracking;
 import com.typicalcoderr.Deliverit.domain.User;
-import com.typicalcoderr.Deliverit.domain.Warehouse;
 import com.typicalcoderr.Deliverit.dto.DriverDetailsDto;
-import com.typicalcoderr.Deliverit.dto.WarehouseDto;
 import com.typicalcoderr.Deliverit.enums.DriverStatusType;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +35,13 @@ public class DriverService {
 
     private final DriverDetailsRepository driverDetailsRepository;
     private final UserRepository userRepository;
+    private final TrackingRepository trackingRepository;
 
     @Autowired
-    public DriverService(DriverDetailsRepository driverDetailsRepository, UserRepository userRepository) {
+    public DriverService(DriverDetailsRepository driverDetailsRepository, UserRepository userRepository, TrackingRepository trackingRepository) {
         this.driverDetailsRepository = driverDetailsRepository;
         this.userRepository = userRepository;
+        this.trackingRepository = trackingRepository;
     }
 
 
@@ -79,7 +80,8 @@ public class DriverService {
     }
 
 
-    public List<DriverDetailsDto> getAllDrivers() {
+    @Transactional
+    public List<DriverDetailsDto> getAllDrivers() throws DeliveritException{
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
 
 
@@ -121,6 +123,7 @@ public class DriverService {
 
 
 
+    @Transactional
     public List<DriverDetailsDto> getAllAvailableDrivers() throws DeliveritException {
 
         User supervisor = userRepository.findUserByEmail(getUsername()).orElseThrow(() -> new DeliveritException("user not found!"));
@@ -138,13 +141,14 @@ public class DriverService {
         return list;
     }
 
+    @Transactional
     public DriverDetails toggleDriverAvailability(DriverDetailsDto driverDetailsDto) throws DeliveritException {
 
         DriverDetails driverDetails = driverDetailsRepository.findByDriverId(driverDetailsDto.getDriverId()).orElseThrow(() -> new DeliveritException("driver not found"));
         int num = driverDetails.getNoOfAssignedRides();
 
         driverDetails.setNoOfAssignedRides(num + 1);
-        if (num == 3) {
+        if (num == 10) {
             driverDetails.setStatus(DriverStatusType.ASSIGN_SLOTS_FULL.getType());
         } else {
             driverDetails.setStatus(DriverStatusType.AVAILABLE.getType());
@@ -210,6 +214,21 @@ public class DriverService {
         driverDetails.setStatus(DriverStatusType.AVAILABLE.getType());
 
         return driverDetailsRepository.save(driverDetails);
+
+    }
+
+    public void removeDriver(String driverId) throws DeliveritException{
+        DriverDetails driverDetails = driverDetailsRepository.findById(driverId).orElseThrow(()-> new DeliveritException("Driver Details not found!"));
+//        User user = driverDetails.getUser();
+
+//        Optional driver = userRepository.findUserByEmail(user.getEmail());
+
+        List <Tracking> tracking = trackingRepository.findTrackingsByDriverDetails_DriverId(driverId);
+
+        if(tracking.size()>0) throw new DeliveritException("Deletion failed! driver has been assigned for deliveries");
+
+        driverDetailsRepository.deleteById(driverId);
+        userRepository.deleteById(driverDetails.getUser().getEmail());
 
     }
 }

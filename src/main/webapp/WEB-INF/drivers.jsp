@@ -24,10 +24,12 @@
 <div class="container container-home content">
 
     <div class="card border-dark mb-3 drivers-list">
+        <%@include file="utils/successAlert.jsp" %>
+        <%@include file="utils/errorAlert.jsp" %>
         <div class="title-add">
             <h4 class="recent-students-title title-in-add">All Drivers</h4>
             <sec:authorize access="hasRole('SUPERVISOR')">
-                <h6 class="recent-students-title btn-in-add"><strong> Warehouse </strong> <span
+                <h6 class="recent-students-title btn-in-add-txt "><strong> Warehouse </strong> <span
                         class="badge bg-success">${warehouseLocation} </span></h6>
             </sec:authorize>
 
@@ -128,12 +130,26 @@
                             <div class="card-body text-center">
                                 <h5 class="card-title">${driver.getDriverFirstName()} ${driver.getDriverLastName()}</h5>
                                 <p class="card-text">${driver.getVehicleNumber()}</p>
-                                <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal${driver.getDriverId()}">
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal${driver.getDriverId()}" style="width: 150px">
 
 
-                                    view details
-                                </button>
+                                            view details
+                                        </button>
+                                    </div>
+                                    <div class="col">
+
+                                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                                data-bs-target="#removeDriver${driver.getDriverId()}" style="width: 150px">
+
+
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+
 
                             </div>
 
@@ -147,6 +163,7 @@
 
                     </div>
                     <%@ include file="modals/viewDriverDetails.jsp" %>
+                    <%@include file="modals/removeDriver.jsp"%>
                 </c:forEach>
             </sec:authorize>
 

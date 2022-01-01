@@ -39,7 +39,13 @@ public class DriverWebController {
     public ModelAndView allDrivers() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("drivers");
-        mv.addObject("driverList", driverService.getAllDrivers());
+        try {
+            mv.addObject("driverList", driverService.getAllDrivers());
+
+        }catch (DeliveritException e){
+            mv.addObject("error", new APIException(e.getMessage()));
+            e.printStackTrace();
+        }
         return mv;
     }
 
@@ -138,16 +144,16 @@ public class DriverWebController {
 
     @PostMapping("/assign-driver")
     @PreAuthorize("hasRole('SUPERVISOR')")
-    public ModelAndView assignDriver(@RequestParam LocalDate pickupDate, LocalDate dropoffDate, String driverId, String shipmentId , RedirectAttributes redirectAttributes) {
+    public ModelAndView assignDriver(@RequestParam String pickupDate, String dropoffDate, String driverId, String shipmentId , RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
-
+//        System.out.println(pickupDate + " "+dropoffDate +shipmentId + driverId);
 
 
         try {
             ShipmentDto shipmentDto = new ShipmentDto();
             shipmentDto.setShipmentId(Integer.parseInt(shipmentId));
-            shipmentDto.setPickUpDate(pickupDate);
-            shipmentDto.setDropOffDate(dropoffDate);
+            shipmentDto.setPickUpDate(LocalDate.parse(pickupDate));
+            shipmentDto.setDropOffDate(LocalDate.parse(dropoffDate));
 
             TrackingDto trackingDto = new TrackingDto();
             trackingDto.setDriverId(driverId);
@@ -159,7 +165,7 @@ public class DriverWebController {
             shipmentService.updateDates(shipmentDto);
             trackingService.addTracking(trackingDto);
             driverService.toggleDriverAvailability(driverDetailsDto);
-
+            System.out.println("sdsd"+ shipmentDto + trackingDto + driverDetailsDto);
 //            mv = homeAdmin(null);
             redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Driver Assigned successfully!"));
 
@@ -174,6 +180,23 @@ public class DriverWebController {
 
 
 
+    }
+
+    @PostMapping("/removeDriver")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView removeDriver(@RequestParam String driverId, RedirectAttributes redirectAttributes){
+        ModelAndView mv = new ModelAndView();
+        System.out.println(driverId);
+        try{
+            driverService.removeDriver(driverId);
+
+            redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Driver removed Successfully"));
+        }catch (DeliveritException e){
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
+        }
+        mv.setViewName("redirect:/drivers");
+
+        return mv;
     }
 
 

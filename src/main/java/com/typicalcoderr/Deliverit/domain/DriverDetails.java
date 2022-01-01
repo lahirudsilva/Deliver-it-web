@@ -37,10 +37,10 @@ public class DriverDetails {
     //    ^([0-9]{9}[x|X|v|V]|[0-9]{12})$
     @Column(nullable = false, unique = true)
     @Pattern(regexp="(^([0-9]{9}[x|X|v|V]|[0-9]{12}))",message = "Incorrect NIC Number")
-    @NotEmpty(message = "driverId is required")
+    @NotEmpty(message = "NIC is required")
     private String NIC;
 
-    @NotEmpty(message = "driverId is required")
+    @NotEmpty(message = "Driver status is required")
     private String status;
 
     //    ^([a-zA-Z]{1,3}|((?!0*-)[0-9]{1,3}))-[0-9]{4}(?<!0{4})$   $valid = '64-8681'; // BAC-1488
