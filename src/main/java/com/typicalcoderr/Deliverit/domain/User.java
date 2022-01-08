@@ -48,11 +48,19 @@ public class User {
     @Column(nullable = false)
     private String userRole;
 
+    @Column(columnDefinition="bit default 1")
+    private Boolean isVerified;
+
+    @Column(columnDefinition="bit default 0")
+    private Boolean isBlackListed;
+
     private Instant joinedOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouseId", referencedColumnName = "warehouseNumber")
     private Warehouse warehouse;
+
+
 
 
 }

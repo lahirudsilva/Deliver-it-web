@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findUserByEmail(String email);
+    Optional<User> findUserByEmailAndIsBlackListed(String email, Boolean isBlacklisted);
     List <User> findUserByUserRole(String userRole);
     User findUserByUserRoleAndAndWarehouseIsLike(String role, Warehouse warehouse);
 }

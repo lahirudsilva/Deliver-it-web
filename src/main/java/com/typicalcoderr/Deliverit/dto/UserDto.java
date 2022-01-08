@@ -27,10 +27,12 @@ public class UserDto {
     private String joinedOn;
     private String city;
     private String warehouseNumber;
+    private boolean isVerified;
+    private boolean isBlacklisted;
     private Warehouse warehouse;
 
 
-    public UserDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn, String city, String warehouseNumber) {
+    public UserDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn, String city, String warehouseNumber, Boolean isVerified, Boolean isBlacklisted) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,9 +41,11 @@ public class UserDto {
         this.joinedOn = joinedOn;
         this.city = city;
         this.warehouseNumber = warehouseNumber;
+        this.isVerified = isVerified;
+        this.isBlacklisted = isBlacklisted;
     }
 
-    public UserDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn, String city) {
+    public UserDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn, String city, Boolean isVerified, Boolean isBlacklisted) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,5 +53,7 @@ public class UserDto {
         this.userRole = userRole;
         this.joinedOn = joinedOn;
         this.city = city;
+        this.isVerified = isVerified;
+        this.isBlacklisted = isBlacklisted;
     }
 }
