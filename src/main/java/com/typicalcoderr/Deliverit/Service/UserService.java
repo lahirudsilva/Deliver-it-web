@@ -41,6 +41,7 @@ public class UserService {
     @Transactional
     public UserDto registerUser(UserDto dto) throws DeliveritException {
 
+        System.out.println(dto);
         Optional existing = userRepository.findUserByEmail(dto.getEmail());
 
         if(existing.isPresent()){

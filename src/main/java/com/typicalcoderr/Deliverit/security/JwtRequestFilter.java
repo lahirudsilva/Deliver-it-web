@@ -56,41 +56,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
 
-//        String authHeader = request.getHeader("Authorization");
-//        if (authHeader == null) {
-//            filterChain.doFilter(request, response);
-//            return;
-//        } else {
-//            try {
-//
-//                String token = authHeader.substring("Bearer ".length());
-//                String usernameFromToken = jwtProvider.getUsernameFromToken(token);
-//                UserDetails userDetails = userDetailsService.loadUserByUsername(usernameFromToken);
-//                Boolean isTokenValid = jwtProvider.validateToken(token, userDetails);
-//
-//                if (isTokenValid && SecurityContextHolder.getContext().getAuthentication() == null) {
-//                    UsernamePasswordAuthenticationToken uPToken = new UsernamePasswordAuthenticationToken(
-//                            userDetails.getUsername(), null, userDetails.getAuthorities()
-//                    );
-//                    uPToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                    SecurityContextHolder.getContext().setAuthentication(uPToken);
-//                } else {
-//                    SecurityContextHolder.getContext().setAuthentication(null);
-//                }
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            } finally {
-//                filterChain.doFilter(request, response);
-//            }
-//        }
-
-
-
-
-
-
-
-
     }
 
     //Utility function to get token from request
