@@ -32,4 +32,6 @@ public class TrackingDto {
     private LocalDate dropOffDate;
     private String driverContactNumber;
     private DriverDetails driverDetails;
+    private String pick;
+    private String drop;
 }

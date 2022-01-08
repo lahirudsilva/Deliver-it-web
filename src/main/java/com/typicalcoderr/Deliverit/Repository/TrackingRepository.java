@@ -16,5 +16,10 @@ public interface TrackingRepository extends JpaRepository<Tracking,Integer> {
     List <Tracking> findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(String status, String driverId);
     Tracking findTrackingsByShipment_ShipmentId(Integer shipmentId);
     List <Tracking> findTrackingsByDriverDetails_DriverIdAndShipmentStatusNotLike(String driverId, String shipmentStatus);
+    List <Tracking> findTrackingsByShipmentStatusIsLikeAndShipment_UserEmail(String shipmentStatus, String email);
+    List <Tracking> findTrackingsByShipmentUserEmailOrderByUpdatedAtDesc(String email );
+    List <Tracking> findTrackingsByShipmentStatusIsNotLikeAndShipment_WarehouseWarehouseNumberOrderByUpdatedAtDesc(String shipmentStatus, String warehouseNumber);
+    List <Tracking> findTrackingsByShipmentStatusIsNotLikeOrderByUpdatedAtDesc(String shipmentStatus);
+
 
 }
