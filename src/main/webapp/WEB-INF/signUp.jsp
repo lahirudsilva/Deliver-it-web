@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +59,8 @@
                                     </div>
 
                                     <div class="form-outline mb-4">
-                                        <input type="password" name="password" id="exampleFormControlInput4" placeholder="Password" class="form-control" maxlength="50" required />
+                                        <input type="password" name="password" pattern=".{5,}" id="exampleFormControlInput4" placeholder="Password" class="form-control"
+                                               title="Password should be 5 characters minimum" maxlength="50" required />
 
                                     </div>
 
@@ -68,9 +70,10 @@
                                     </div>
 
                                     <div class="form-outline mb-4">
+<%--                                        pattern="[0-9]{10}"--%>
 
                                         <input type="tel" class="form-control" id="exampleFormControlInput6" placeholder="Contact Number"
-                                               pattern="[0-9]{10}" name="contactNumber" required>
+                                               pattern="^(?:0|94|\+94)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|912)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\d)\d{6}$" name="contactNumber" title="Contact Number should contain at least 10 numbers. e.g. XXXXXXXXXX" required>
                                     </div>
 
                                     <div class="form-outline mb-4">
@@ -78,6 +81,7 @@
                                         <input type="text" class="form-control" id="exampleFormControlInput7" placeholder="City"
                                                name="city" required>
                                     </div>
+
 
 
                                     <br/>
