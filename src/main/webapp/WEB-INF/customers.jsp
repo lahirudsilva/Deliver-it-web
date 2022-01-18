@@ -23,6 +23,8 @@
 <div class="container container-home content">
 
     <div class="card border-dark mb-3 drivers-list">
+        <%@include file="utils/successAlert.jsp" %>
+        <%@include file="utils/errorAlert.jsp" %>
         <div class="title-add">
             <h4 class="recent-students-title title-in-add">All Customers</h4>
 
@@ -37,19 +39,46 @@
                     <div class="card">
                         <div class="card-header">
                             <strong>${customer.getEmail()} </strong>
-<%--                            <c:choose>--%>
-<%--                                <c:when test="${driver.getStatus() == 'available'}"><span--%>
-<%--                                        class="badge bg-success" style="margin-left: 190px">Available</span></c:when>--%>
-<%--                                <c:otherwise><span class="badge bg-danger"--%>
-<%--                                                   style="margin-left: 170px">Unavailable</span></c:otherwise>--%>
-<%--                            </c:choose>--%>
-
                         </div>
 
                         <div class="card-body text-center">
                             <h5 class="card-title">${customer.getFirstName()} ${customer.getLastName()} </h5>
+                            <c:if test="${customer.verified == true && customer.blacklisted == false}"><span
+                                    class="badge bg-success">Verified</span></c:if>
+                            <c:if test="${customer.verified == true && customer.blacklisted == true}"><span
+                                    class="badge bg-dark">Blacklisted</span></c:if>
+
                             <p class="card-text">${customer.getContactNumber()}</p>
-<%--                            <a href="#"  class="btn btn-outline-dark">view details</a>--%>
+
+                            <div class="row">
+                                <div class="col">
+                                    <c:if test="${customer.blacklisted == true}">
+                                        <form method="POST" action="/setVerified">
+                                            <input hidden id="editIdInput${customer.getEmail()}" name="email"
+                                                   value="${customer.getEmail()}"/>
+                                            <button type="submit" class="btn btn-outline-success">Set Verified</button>
+                                        </form>
+
+                                    </c:if>
+
+                                    <c:if test="${customer.blacklisted == false}">
+                                        <form method="POST" action="/setBlacklisted">
+                                            <input hidden id="editIdInput${customer.getEmail()}" name="email"
+                                                   value="${customer.getEmail()}"/>
+                                            <button type="submit" class="btn btn-outline-dark">Set Blacklisted</button>
+                                        </form>
+                                    </c:if>
+                                </div>
+                                <div class="col">
+                                    <form method="POST" action="/removeCustomer">
+                                        <input hidden id="editIdInput${customer.getEmail()}" name="email"
+                                               value="${customer.getEmail()}"/>
+                                        <button type="submit" class="btn btn-outline-dark" style="width: 150px">Remove
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </div>
                         </div>
                         <div class="card-footer text-muted text-center">
                             Registered On ${customer.getJoinedOn()}
@@ -70,7 +99,7 @@
 </body>
 <!--Footer-->
 <div style="margin-top: 400px">
-<%@ include file="utils/footer.jsp" %>
+    <%@ include file="utils/footer.jsp" %>
 </div>
 
 </html>

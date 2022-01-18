@@ -42,6 +42,8 @@
 
 
     <div class="card border-dark mb-3 recent-packages">
+        <%@include file="utils/successAlert.jsp" %>
+        <%@include file="utils/errorAlert.jsp" %>
         <h4 class="recent-packages-table">Your recent Shipments</h4>
         <hr class="table-hr">
 
@@ -108,7 +110,12 @@
                     <td class="text-center">
 
                             <c:if test="${packages.getStatus() == 'pending'}">
-                                <button type="button" class="btn btn-sm btn-warning" disabled>Track here</button>
+                                <form method="POST" action="/cancelPackage">
+                                    <input hidden id="editIdInput${packages.getShipmentId()}" name="shipmentId"
+                                           value="${packages.getShipmentId()}"/>
+                                    <button type="submit" class="btn btn-sm btn-danger" >Cancel Request</button>
+                                </form>
+
                             </c:if>
                             <c:if test="${packages.getStatus() == 'accepted'}">
                                 <form method="GET" action="/track-package">
@@ -133,6 +140,8 @@
 
 
 </div>
+
+
 
 
 </body>

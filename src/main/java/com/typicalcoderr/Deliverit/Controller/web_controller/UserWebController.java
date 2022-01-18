@@ -1,6 +1,7 @@
 package com.typicalcoderr.Deliverit.Controller.web_controller;
 
 import com.typicalcoderr.Deliverit.Service.*;
+import com.typicalcoderr.Deliverit.domain.User;
 import com.typicalcoderr.Deliverit.dto.*;
 import com.typicalcoderr.Deliverit.exceptions.APIException;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
@@ -44,8 +45,8 @@ public class UserWebController {
     @GetMapping("/register")
     public ModelAndView createAccount() {
         ModelAndView mv = new ModelAndView();
-
-
+        User user = new User();
+        mv.addObject("user", user);
         mv.setViewName("signUp");
         return mv;
 
@@ -130,7 +131,7 @@ public class UserWebController {
     }
 
 
-    //driver home method here
+
 
 
     @PostMapping("/change-password")

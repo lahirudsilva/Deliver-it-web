@@ -43,9 +43,12 @@ public class UserService {
 
         System.out.println(dto);
         Optional existing = userRepository.findUserByEmail(dto.getEmail());
+        Optional existingContact = userRepository.findUserByContactNumber(dto.getContactNumber());
 
         if(existing.isPresent()){
             throw new DeliveritException("Email already exists");
+        }else if(existingContact.isPresent()){
+            throw new DeliveritException("Contact number already exists");
         }
 
         Warehouse _warehouse = warehouseRepository.findById(dto.getWarehouseNumber()).orElseThrow(()-> new DeliveritException("warehouseID not found!"));
@@ -123,6 +126,8 @@ public class UserService {
                 .joinedOn(Instant.now())
                 .city(dto.getCity())
                 .contactNumber(dto.getContactNumber())
+                .isVerified(true)
+                .isBlackListed(false)
                 .warehouse(_warehouse)
                 .password(passwordEncoder.encode(dto.getPassword())).build();
 
@@ -132,7 +137,8 @@ public class UserService {
     private UserDto mapDto(User customer){
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy").withZone(ZoneId.systemDefault());
 
-        return new UserDto(customer.getEmail(),customer.getFirstName(), customer.getLastName(),customer.getContactNumber(),customer.getUserRole(),DATE_TIME_FORMATTER.format(customer.getJoinedOn()),  customer.getCity(), customer.getIsVerified(), customer.getIsBlackListed());
+        return new UserDto(customer.getEmail(),customer.getFirstName(), customer.getLastName(),customer.getContactNumber(),
+                customer.getUserRole(),DATE_TIME_FORMATTER.format(customer.getJoinedOn()),  customer.getCity(), customer.getIsVerified(), customer.getIsBlackListed());
     }
 
 
