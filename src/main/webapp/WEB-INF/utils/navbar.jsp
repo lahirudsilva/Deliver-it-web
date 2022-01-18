@@ -16,6 +16,7 @@
                    href="/shipments">Shipments</a>
                 <a class="nav-item nav-link ${param.page == "drivers" ? "active" : null}" href="/drivers">Drivers</a>
                 <a class="nav-item nav-link ${param.page == "customers" ? "active" : null}" href="/customers">Customers</a>
+                <a class="nav-item nav-link ${param.page == "inquires" ? "active" : null}" href="/all-inquires">Inquires</a>
                 <a class="nav-item nav-link ${param.page == "warehouses" ? "active" : null}" href="/warehouses">Warehouses</a>
             </div>
         </div>
@@ -29,7 +30,7 @@
                     <a class="nav-item nav-link ${param.page == "shipments" ? "active" : null}"
                        href="/shipmentsForWarehouse">Shipments</a>
                     <a class="nav-item nav-link ${param.page == "drivers" ? "active" : null}" href="/driversForWarehouse">Drivers</a>
-<%--                    <a class="nav-item nav-link ${param.page == "customers" ? "active" : null}" href="/customers">Customers</a>--%>
+                    <a class="nav-item nav-link ${param.page == "inquires" ? "active" : null}" href="/inquires">Inquires</a>
 <%--                    <a class="nav-item nav-link ${param.page == "warehouses" ? "active" : null}" href="/warehouses">Warehouses</a>--%>
                 </div>
             </div>
@@ -40,6 +41,8 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link ${param.page == "home" ? "active" : null}" href="/">Home</a>
                 <a class="nav-item nav-link ${param.page == "sendPackage" ? "active" : null}" href="/createPackage">Send Package</a>
+                <a class="nav-item nav-link ${param.page == "myPackages" ? "active" : null}"
+                   href="/myPackages">My packages</a>
                 <a class="nav-item nav-link ${param.page == "tracking" ? "active" : null}" href="/searchTrackingNumber">Tracking</a>
                 <a class="nav-item nav-link ${param.page == "inquires" ? "active" : null}"
                    href="/myInquires">Inquires</a>
@@ -53,7 +56,7 @@
                 <div class="navbar-nav">
                     <a class="nav-item nav-link ${param.page == "home" ? "active" : null}" href="/">Home</a>
                     <a class="nav-item nav-link ${param.page == "deliveries" ? "active" : null}" href="/deliveries">Deliveries</a>
-                    <a class="nav-item nav-link ${param.page == "tracking" ? "active" : null}" href="/searchTrackingNumber">Past Rides</a>
+                    <a class="nav-item nav-link ${param.page == "pastRides" ? "active" : null}" href="/pastRides">Past Rides</a>
 <%--                    <a class="nav-item nav-link ${param.page == "inquires" ? "active" : null}"--%>
 <%--                       href="/myInquires">Inquires</a>--%>
                 </div>
