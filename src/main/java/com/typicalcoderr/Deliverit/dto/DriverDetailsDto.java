@@ -25,11 +25,14 @@ public class DriverDetailsDto {
     private String driverId;
     private String driverEmail;
     private String NIC;
+    private  String idNumber;
     private String status;
     private Integer noOfRidesToGo;
     private String vehicleNumber;
     private String contactNumber;
     private String registeredOn;
     private String warehouseLocation;
+    private String warehouseId;
+    private String town;
     private User user;
 }

@@ -1,6 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page import="com.typicalcoderr.Deliverit.dto.DriverDetailsDto" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +47,21 @@
         <div class="row">
 
             <sec:authorize access="hasRole('SUPERVISOR')">
+                <%
+                    List<DriverDetailsDto> wdri = new ArrayList<>();
+                    try {
+                        wdri = (List<DriverDetailsDto>) request.getAttribute("driverListForWarehouse");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (wdri != null && wdri.size() <= 0) {
+                %>
+                <div class="alert alert-secondary" role="alert">
+                    No drivers For this warehouse!
+                </div>
+                <%
+                } else {
+                %>
                 <c:forEach var="driver" items="${driverListForWarehouse}">
 
                     <c:url value="#" var="url">
@@ -59,7 +77,7 @@
 
                                 <c:if test="${driver.getStatus() == 'available'}"><span
                                         class="badge rounded-pill bg-success"
-                                        style="margin-left: 190px">Available</span></c:if>
+                                        style="margin-left: 170px">Available</span></c:if>
                                 <c:if test="${driver.getStatus() == 'unavailable'}"><span
                                         class="badge rounded-pill bg-danger"
                                         style="margin-left: 170px">Unavailable</span></c:if>
@@ -95,10 +113,25 @@
                     </div>
                     <%@ include file="modals/viewDriverDetails.jsp" %>
                 </c:forEach>
-
+                <% } %>
             </sec:authorize>
 
             <sec:authorize access="hasRole('ADMIN')">
+                <%
+                    List<DriverDetailsDto> dri = new ArrayList<>();
+                    try {
+                        dri = (List<DriverDetailsDto>) request.getAttribute("driverList");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (dri != null && dri.size() <= 0) {
+                %>
+                <div class="alert alert-secondary" role="alert">
+                    No drivers in th system!
+                </div>
+                <%
+                } else {
+                %>
                 <c:forEach var="driver" items="${driverList}">
 
                     <c:url value="#" var="url">
@@ -114,7 +147,7 @@
 
                                 <c:if test="${driver.getStatus() == 'available'}"><span
                                         class="badge rounded-pill bg-success"
-                                        style="margin-left: 190px">Available</span></c:if>
+                                        style="margin-left: 170px">Available</span></c:if>
                                 <c:if test="${driver.getStatus() == 'unavailable'}"><span
                                         class="badge rounded-pill bg-danger"
                                         style="margin-left: 170px">Unavailable</span></c:if>
@@ -133,7 +166,8 @@
                                 <div class="row">
                                     <div class="col">
                                         <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal${driver.getDriverId()}" style="width: 150px">
+                                                data-bs-target="#exampleModal${driver.getDriverId()}"
+                                                style="width: 150px">
 
 
                                             view details
@@ -142,7 +176,8 @@
                                     <div class="col">
 
                                         <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
-                                                data-bs-target="#removeDriver${driver.getDriverId()}" style="width: 150px">
+                                                data-bs-target="#removeDriver${driver.getDriverId()}"
+                                                style="width: 150px">
 
 
                                             Remove
@@ -163,8 +198,9 @@
 
                     </div>
                     <%@ include file="modals/viewDriverDetails.jsp" %>
-                    <%@include file="modals/removeDriver.jsp"%>
+                    <%@include file="modals/removeDriver.jsp" %>
                 </c:forEach>
+                <% } %>
             </sec:authorize>
 
         </div>
@@ -179,8 +215,8 @@
 </body>
 
 <!--Footer-->
-<div style="margin-top: 350px">
-<%@ include file="utils/footer.jsp" %>
+<div style="margin-top: 490px">
+    <%@ include file="utils/footer.jsp" %>
 </div>
 
 </html>

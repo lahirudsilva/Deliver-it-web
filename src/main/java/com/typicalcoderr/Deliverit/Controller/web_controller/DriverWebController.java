@@ -94,7 +94,8 @@ public class DriverWebController {
 
     @PostMapping("/add-driver")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView addDriver(@RequestParam String firstName, String lastName, String email, String contactNumber, String driverId, String NIC, String vehicleNumber,String warehouseId, String city ,RedirectAttributes redirectAttributes) {
+    public ModelAndView addDriver(@RequestParam String firstName, String lastName, String email, String contactNumber, String driverId, String NIC,
+                                  String vehicleNumber,String warehouseId, String city ,RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
 
 
@@ -186,7 +187,7 @@ public class DriverWebController {
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView removeDriver(@RequestParam String driverId, RedirectAttributes redirectAttributes){
         ModelAndView mv = new ModelAndView();
-        System.out.println(driverId);
+//        System.out.println(driverId);
         try{
             driverService.removeDriver(driverId);
 
@@ -199,5 +200,15 @@ public class DriverWebController {
         return mv;
     }
 
-
+    @GetMapping("/pastRides")
+    @PreAuthorize("hasRole('DRIVER')")
+    public ModelAndView pastRides(){
+        ModelAndView mv = new ModelAndView();
+        try {
+            mv.addObject("pastShipments", shipmentService.getPastDeliveries());
+        }catch (DeliveritException e){
+            e.printStackTrace();
+        }
+        return mv;
+    }
 }

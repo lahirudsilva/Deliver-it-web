@@ -1,6 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.typicalcoderr.Deliverit.dto.ShipmentDto" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +29,8 @@
 <div class="container container-home content">
 
     <div class="card border-dark mb-3 drivers-list">
+        <%@include file="utils/successAlert.jsp" %>
+        <%@include file="utils/errorAlert.jsp" %>
         <div class="title-add">
             <h4 class="recent-students-title title-in-add">Deliveries/Today</h4>
 
@@ -40,14 +45,29 @@
             </ul>
 
             <div id="tab-1" class="tab-content current">
-                <P style="text-align: center">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua.</P>
+                <%
+                    List<ShipmentDto> pic = new ArrayList<>();
+                    try {
+                        pic = (List<ShipmentDto>) request.getAttribute("pickupList");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (pic != null && pic.size() <= 0) {
+                %>
+                <div class="alert alert-secondary" role="alert">
+                    No packages to pick up!
+                </div>
+                <%
+                } else {
+                %>
                 <div class="row" style="margin-top: 20px">
                     <c:forEach var="pickup" items="${pickupList}">
 
                         <c:url value="#" var="url">
                             <c:param name="shipmentId" value="${pickup.getShipmentId()}"/>
                         </c:url>
+
+
                         <div class="mb-3" style="width: 25rem;">
                             <div class="card border-secondary mb-3">
                                 <div class="card-header">
@@ -73,9 +93,9 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                                    <form method="POST" action="/track-package">
-                                        <input hidden id="editIdInput${shipment.getShipmentId()}" name="shipmentId"
-                                               value="${shipment.getShipmentId()}"/>
+                                    <form method="POST" action="/confirmPickupDelivery">
+                                        <input hidden id="editIdInput${pickup.getShipmentId()}" name="shipmentId"
+                                               value="${pickup.getShipmentId()}"/>
                                         <button type="submit" class="btn btn-outline-dark">Confirm PickUp</button>
                                     </form>
 
@@ -90,17 +110,33 @@
                     </c:forEach>
 
                 </div>
+                <% } %>
             </div>
             <div id="tab-2" class="tab-content">
-                <P style="text-align: center">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua.</P>
+
+                <%
+                    List<ShipmentDto> iwh = new ArrayList<>();
+                    try {
+                        iwh = (List<ShipmentDto>) request.getAttribute("inWarehouseList");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (iwh != null && iwh.size() <= 0) {
+                %>
+                <div class="alert alert-secondary" role="alert">
+                    No packages in warehouse!
+                </div>
+                <%
+                } else {
+                %>
                 <div class="row" style="margin-top: 20px">
                     <c:forEach var="inWarehouse" items="${inWarehouseList}">
 
                         <c:url value="#" var="url">
                             <c:param name="shipmentId" value="${inWarehouse.getShipmentId()}"/>
                         </c:url>
-                        <div class="mb-3" style="width: 25rem;">
+
+                        <div class="mb-3" style="width: 24rem;">
                             <div class="card border-secondary mb-3">
                                 <div class="card-header">
                                     <strong>Shipment ID #${inWarehouse.getShipmentId()}</strong>
@@ -122,9 +158,9 @@
                                         </c:otherwise>
                                     </c:choose>
 
-                                    <form method="POST" action="/track-package">
-                                        <input hidden id="editIdInput${shipment.getShipmentId()}" name="shipmentId"
-                                               value="${shipment.getShipmentId()}"/>
+                                    <form method="POST" action="/takeForDelivery">
+                                        <input hidden id="editIdInput${inWarehouse.getShipmentId()}" name="shipmentId"
+                                               value="${inWarehouse.getShipmentId()}"/>
                                         <button type="submit" class="btn btn-outline-dark">Take for Delivery</button>
                                     </form>
                                 </div>
@@ -138,16 +174,32 @@
                     </c:forEach>
 
                 </div>
+                <% } %>
             </div>
             <div id="tab-3" class="tab-content">
-                <P style="text-align: center">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua.</P>
+                <%
+                    List<ShipmentDto> otw = new ArrayList<>();
+                    try {
+                        otw = (List<ShipmentDto>) request.getAttribute("onDeliveryList");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (otw != null && otw.size() <= 0) {
+                %>
+                <div class="alert alert-secondary" role="alert">
+                    No packages to deliver today!
+                </div>
+                <%
+                } else {
+                %>
                 <div class="row" style="margin-top: 20px">
                     <c:forEach var="delivery" items="${onDeliveryList}">
 
                         <c:url value="#" var="url">
                             <c:param name="shipmentId" value="${delivery.getShipmentId()}"/>
                         </c:url>
+
+
                         <div class="mb-3" style="width: 25rem;">
                             <div class="card border-secondary mb-3">
                                 <div class="card-header">
@@ -167,13 +219,14 @@
                                             <p style="margin-top: 20px"><small>no notes available</small></p>
                                         </c:when>
                                         <c:otherwise>
-                                            <p style="margin-top: 20px"><small> Note : ${delivery.getDescription()}</small></p>
+                                            <p style="margin-top: 20px"><small> Note
+                                                : ${delivery.getDescription()}</small></p>
                                         </c:otherwise>
                                     </c:choose>
 
-                                    <form method="POST" action="/track-package">
-                                        <input hidden id="editIdInput${shipment.getShipmentId()}" name="shipmentId"
-                                               value="${shipment.getShipmentId()}"/>
+                                    <form method="POST" action="/delivering">
+                                        <input hidden id="editIdInput${delivery.getShipmentId()}" name="shipmentId"
+                                               value="${delivery.getShipmentId()}"/>
                                         <button type="submit" class="btn btn-outline-dark">Confirm Delivery</button>
                                     </form>
                                 </div>
@@ -187,6 +240,7 @@
                     </c:forEach>
 
                 </div>
+                <% } %>
             </div>
 
 
