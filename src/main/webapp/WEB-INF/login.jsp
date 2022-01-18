@@ -65,12 +65,15 @@
 
                                     <a class="small text-muted" href="#!">Forgot password?</a>
                                     <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="/register" style="color: #393f81;">Register here</a></p>
-                                    <a href="#!" class="small text-muted">Terms of use.</a>
-                                    <a href="#!" class="small text-muted">Privacy policy</a>
+
+<%--                                    <a href="#!" class="small text-muted">Terms of use.</a>--%>
+<%--                                    <a href="#!" class="small text-muted">Privacy policy</a>--%>
+
                                 </form>
 
                             </div>
                         </div>
+                        <p style="text-align: center; margin-left: 14rem; "><a class="small text-muted" href="#!">Contact Us @Deliverit</a></p>
                     </div>
                 </div>
             </div>

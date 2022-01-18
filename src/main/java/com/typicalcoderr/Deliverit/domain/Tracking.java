@@ -25,6 +25,7 @@ public class Tracking {
     @JoinColumn(name = "shipmentId", referencedColumnName = "shipmentId")
     private Shipment shipment;
     //driveid
+//    @ManyToOne(cascade= {CascadeType.PERSIST, CascadeType.REMOVE}, fetch=FetchType.EAGER)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driverId", referencedColumnName = "driverId")
     private DriverDetails driverDetails;

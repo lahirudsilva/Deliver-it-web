@@ -31,6 +31,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AuthService {
 
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;

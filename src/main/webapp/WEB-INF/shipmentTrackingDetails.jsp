@@ -25,6 +25,8 @@
 
 <div class="container container-home content" style="height: 750px">
     <div class="card border-dark mb-3 drivers-list">
+
+
         <div class="title-add">
             <h4 class="recent-students-title title-in-add">Tracking Details</h4>
             <sec:authorize access="hasRole('CUSTOMER')">
@@ -175,6 +177,7 @@
             <h5 class="recent-students-title title-in-add text-muted">Driver Details</h5>
             <div class="mb-3" style="margin-top: 20px;">
                 <div class="row g-3" style="margin-left: 70px;">
+
                     <div class="col-4 form-holder">
                         <h6>Driver Name <span
                                 class="badge bg-dark"> ${trackings.getDriverFirstName()} ${trackings.getDriverLastName()}</span>

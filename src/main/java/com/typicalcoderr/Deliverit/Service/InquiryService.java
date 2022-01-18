@@ -55,6 +55,7 @@ public class InquiryService {
 //    }
 DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
 
+    @Transactional
     public Inquiry addInquiries(InquiryDto inquiryDto) throws DeliveritException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 

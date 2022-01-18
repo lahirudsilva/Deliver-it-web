@@ -30,6 +30,7 @@ public class UserDto {
     private boolean isVerified;
     private boolean isBlacklisted;
     private Warehouse warehouse;
+    private String matchingPassword;
 
 
     public UserDto(String email, String firstName, String lastName, String contactNumber, String userRole, String joinedOn, String city, String warehouseNumber, Boolean isVerified, Boolean isBlacklisted) {

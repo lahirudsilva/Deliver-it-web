@@ -24,11 +24,6 @@ import java.time.Instant;
 @Entity(name = "driverDetails")
 public class DriverDetails {
 
-
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    @Column(name = "id", nullable = false)
-//    private Integer id;
-
     @Id
     @Column(nullable = false, unique = true)
     @NotEmpty(message = "driverId is required")
@@ -59,9 +54,5 @@ public class DriverDetails {
     private User user;
 
 
-
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "customerId", referencedColumnName = "email" )
-//    private User user;
 
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,7 +90,10 @@ public class ShipmentWebController {
 
     @PostMapping("/add-package")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ModelAndView addPackage(@RequestParam String senderAddress, String receiverAddress, String receiverEmail, String receiverContactNumber, String packageSize, Double packageWeight, double estimatedCost, String warehouseNumber, String description, String receiverName, RedirectAttributes redirectAttributes) {
+    public ModelAndView addPackage(@RequestParam String senderAddress, String receiverAddress, String receiverEmail,
+                                   String receiverContactNumber, String packageSize, Double packageWeight, double estimatedCost,
+                                   String warehouseNumber, String description, String receiverName, RedirectAttributes redirectAttributes) {
+
         ModelAndView mv = new ModelAndView();
         try {
 
@@ -141,7 +145,7 @@ public class ShipmentWebController {
 
 
     @PostMapping("/rejectShipment")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERVISOR')")
+    @PreAuthorize("hasRole('SUPERVISOR')")
     public ModelAndView rejectShipments(@RequestParam Integer shipmentId, String senderEmail, String receiverEmail, RedirectAttributes redirectAttributes) {
         ModelAndView mv = new ModelAndView();
         System.out.println(senderEmail + receiverEmail);
@@ -157,7 +161,7 @@ public class ShipmentWebController {
         } catch (DeliveritException | MessagingException e) {
             redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
         }
-        mv.setViewName("redirect:/home-admin");
+        mv.setViewName("redirect:/home-supervisor");
         return mv;
 
     }

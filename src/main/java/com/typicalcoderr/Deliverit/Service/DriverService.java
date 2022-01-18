@@ -8,6 +8,7 @@ import com.typicalcoderr.Deliverit.domain.Tracking;
 import com.typicalcoderr.Deliverit.domain.User;
 import com.typicalcoderr.Deliverit.dto.DriverDetailsDto;
 import com.typicalcoderr.Deliverit.enums.DriverStatusType;
+import com.typicalcoderr.Deliverit.enums.TrackingStatusType;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -63,6 +64,7 @@ public class DriverService {
         return driverDetailsRepository.save(driverDetails);
     }
 
+
     public Boolean isExist(String id, String nicNo, String vehicleNo) throws DeliveritException {
         Optional idExisting = driverDetailsRepository.findByDriverId(id);
         Optional NicExisting = driverDetailsRepository.findByNIC(nicNo);
@@ -96,6 +98,7 @@ public class DriverService {
             dto.setNIC(driver.getNIC());
             dto.setContactNumber(driver.getUser().getContactNumber());
             dto.setDriverId(driver.getDriverId().toUpperCase(Locale.ROOT));
+            dto.setWarehouseLocation(driver.getUser().getWarehouse().getLocation());
             dto.setStatus(driver.getStatus());
             dto.setRegisteredOn(DATE_TIME_FORMATTER.format(driver.getRegisteredOn()));
             list.add(dto);
@@ -180,7 +183,7 @@ public class DriverService {
 
 
         DriverDetails driverDetails = driverDetailsRepository.findDriverDetailsByUser(driver);
-
+        System.out.println(driverDetails);
         DriverDetailsDto dto = new DriverDetailsDto();
         dto.setDriverId(driverDetails.getDriverId());
         dto.setWarehouseLocation(driverDetails.getUser().getWarehouse().getLocation());
@@ -227,8 +230,13 @@ public class DriverService {
 
         if(tracking.size()>0) throw new DeliveritException("Deletion failed! driver has been assigned for deliveries");
 
+
+//        List<Tracking> trackingsOfDriver = trackingRepository.findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(TrackingStatusType.DELIVERED.getType(), driverId);
+//
+//        trackingRepository.deleteAll(trackingsOfDriver);
         driverDetailsRepository.deleteById(driverId);
         userRepository.deleteById(driverDetails.getUser().getEmail());
+
 
     }
 }

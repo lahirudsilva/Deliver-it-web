@@ -8,7 +8,7 @@ package com.typicalcoderr.Deliverit.enums;
  */
 public enum ShipmentStatusType {
 
-    PENDING("pending"),ACCEPTED("accepted"),REJECTED("rejected");
+    PENDING("pending"),ACCEPTED("accepted"),REJECTED("rejected"),CANCELED("canceled");
 
     private final String type;
 

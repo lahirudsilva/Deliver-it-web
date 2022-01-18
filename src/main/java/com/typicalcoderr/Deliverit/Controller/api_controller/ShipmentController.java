@@ -28,7 +28,7 @@ public class ShipmentController {
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/addPackage")
-    public ResponseEntity<Object> addShipment(@RequestBody ShipmentDto dto){
+    public ResponseEntity<Object> addShipment(@RequestBody ShipmentDto dto) {
         try {
             Shipment result = shipmentService.addShipment(dto);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
@@ -42,69 +42,74 @@ public class ShipmentController {
 
     @PreAuthorize("hasRole('DRIVER')")
     @GetMapping("/driver/shipmentsDetails")
-    public ResponseEntity<Object> getAcceptedShipmentsForDriver(){
-        try{
+    public ResponseEntity<Object> getAcceptedShipmentsForDriver() {
+        try {
 //            System.out.println(shipmentService.getAllShipmentsForDiver().size());
             List<ShipmentDto> shipmentDto = shipmentService.getAllShipmentsForDiver();
             return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
 
 
-        }catch (DeliveritException e){
+        } catch (DeliveritException e) {
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PreAuthorize("hasRole('DRIVER')")
     @GetMapping("/getPickupDeliveries")
-    public ResponseEntity<Object> getAllPickupDeliveries(){
+    public ResponseEntity<Object> getAllPickupDeliveries() {
         try {
             List<ShipmentDto> shipmentDto = shipmentService.getAllPickupDeliveries();
             return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
-        }catch (DeliveritException e){
+        } catch (DeliveritException e) {
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PreAuthorize("hasRole('DRIVER')")
     @GetMapping("/getInWarehouseDeliveries")
-    public ResponseEntity<Object> getInWarehouseDeliveries(){
-        try{
+    public ResponseEntity<Object> getInWarehouseDeliveries() {
+        try {
 
             List<ShipmentDto> shipmentDto = shipmentService.getAllInWarehouseDeliveries();
             return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
-        }catch (DeliveritException e){
+        } catch (DeliveritException e) {
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PreAuthorize("hasRole('DRIVER')")
     @GetMapping("/getPackagesForDelivery")
-    public ResponseEntity<Object> getPackagesForDelivery(){
-        try{
+    public ResponseEntity<Object> getPackagesForDelivery() {
+        try {
             List<ShipmentDto> shipmentDto = shipmentService.getAllPackagesForDeliveries();
             return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
-        }catch (DeliveritException e){
+        } catch (DeliveritException e) {
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PreAuthorize("hasRole('DRIVER')")
     @GetMapping("/getAllPastRides")
-    public ResponseEntity<Object> getPastDeliveriesForDriver(){
-        try{
+    public ResponseEntity<Object> getPastDeliveriesForDriver() {
+        try {
             List<ShipmentDto> shipmentDto = shipmentService.getPastDeliveries();
             return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
 
-        }catch (DeliveritException e){
+        } catch (DeliveritException e) {
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
 
 
+    @PreAuthorize("hasRole('SUPERVISOR')")
+    @GetMapping("/getAllPackageRequests")
+    public ResponseEntity<Object> getAllPendingRequests() {
 
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @GetMapping("/home-admin")
-//    public ResponseEntity<Object> getAllPendingRequests(){
-//        return new ResponseEntity<>(shipmentService.getAllPendingRequests(), HttpStatus.OK);
-//    }
+        try {
+            List<ShipmentDto> shipmentDto = shipmentService.getAllPendingRequests();
+            return new ResponseEntity<>(shipmentDto, HttpStatus.OK);
+        } catch (DeliveritException e) {
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

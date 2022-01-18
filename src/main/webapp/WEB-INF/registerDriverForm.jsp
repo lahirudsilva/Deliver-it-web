@@ -100,22 +100,22 @@
                 <%--                AP-05-BJ-9353--%>
                 <%--                TN-35-AB-638--%>
                 <%--                MH-03-C-3843--%>
-                <hr/>
-                <h6 class="card-subtitle mb-2 text-muted">Driver Documents</h6>
-                <div class="row g-3">
-                    <div class="col-auto form-holder">
-                        <label for="formFileSm1" class="form-label">NIC</label>
-                        <input class="form-control form-control-sm" id="formFileSm1" type="file">
-                    </div>
-                    <div class="col-auto form-holder">
-                        <label for="formFileSm2" class="form-label">Driver Licence</label>
-                        <input class="form-control form-control-sm" id="formFileSm2" type="file">
-                    </div>
-                    <div class="col-auto form-holder">
-                        <label for="formFileSm3" class="form-label">Vehicle Insurance licence</label>
-                        <input class="form-control form-control-sm" id="formFileSm3" type="file">
-                    </div>
-                </div>
+<%--                <hr/>--%>
+<%--                <h6 class="card-subtitle mb-2 text-muted">Driver Documents</h6>--%>
+<%--                <div class="row g-3">--%>
+<%--                    <div class="col-auto form-holder">--%>
+<%--                        <label for="formFileSm1" class="form-label">NIC</label>--%>
+<%--                        <input class="form-control form-control-sm" id="formFileSm1" type="file">--%>
+<%--                    </div>--%>
+<%--                    <div class="col-auto form-holder">--%>
+<%--                        <label for="formFileSm2" class="form-label">Driver Licence</label>--%>
+<%--                        <input class="form-control form-control-sm" id="formFileSm2" type="file">--%>
+<%--                    </div>--%>
+<%--                    <div class="col-auto form-holder">--%>
+<%--                        <label for="formFileSm3" class="form-label">Vehicle Insurance licence</label>--%>
+<%--                        <input class="form-control form-control-sm" id="formFileSm3" type="file">--%>
+<%--                    </div>--%>
+<%--                </div>--%>
                 <button type="submit" class="btn btn-secondary btn-lg btn-block add-driver-btn">Add Driver
                 </button>
 

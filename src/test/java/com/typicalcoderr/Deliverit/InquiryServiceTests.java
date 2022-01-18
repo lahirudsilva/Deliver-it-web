@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class InquiryServiceTests {
     @Test
     public void testAddInquiry() throws DeliveritException {
 
-        createShipmentForInquiry = testUtil.createPackageRequest();
+        createShipmentForInquiry = testUtil.createPackageRequestForInquiry();
 
         InquiryDto dto = new InquiryDto();
         dto.setDescription("this is a description");
@@ -65,11 +66,12 @@ public class InquiryServiceTests {
 
         assertTrue(isTrue);
 
-        System.out.println("[TEST] Get all students [PASSED]");
+        System.out.println("[TEST] Get all Inquiries for admin [PASSED]");
 
     }
 
     @Test
+    @WithMockUser(username = "createPackageRequestForInquiry@email.com", password = "test1", roles = "CUSTOMER")
     public void testGetAllInquiriesOfCustomer() throws DeliveritException {
         List<InquiryDto> results = inquiryService.getAllMyInquires();
         System.out.println(results);

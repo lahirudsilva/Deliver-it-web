@@ -104,11 +104,17 @@ body {
     width: 20%;
 }
 
+.btn-in-back {
+    margin-left: 10px;
+    width: 20%;
+}
+
 .btn-dispute {
     width: 30%;
 }
 
 .btn-in-add-txt {
+    margin-left: 140px;
     width: 20%;
 }
 

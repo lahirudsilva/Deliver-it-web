@@ -88,7 +88,7 @@
                                     <%--                                </select>--%>
                                 <div class="col-8">
                                     <input name="pickupDate" id="datefield" type='date' min='1899-01-01'
-                                           max='2000-13-13'></input>
+                                           max='2000-13-13' required></input>
 
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                                     <%--                                </select>--%>
                                 <div class="col-8">
                                     <input name="dropoffDate" id="datefield1" type='date' min='1899-01-01'
-                                           max='2000-13-13'></input>
+                                           max='2000-13-13' required></input>
 
                                 </div>
                             </div>
@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="col-8">
                                     <select required class="form-select" aria-label="Default select example"
-                                            id="inputSelectDriver${requests.getShipmentId()}" name="driverId">
+                                            id="inputSelectDriver${requests.getShipmentId()}" name="driverId" >
                                         <c:forEach var="driver" items="${availableDrivers}">
                                             <option value="" selected disabled hidden>Choose a driver..</option>
                                             <option value="${driver.getDriverId()}"> ${driver.getDriverFirstName()} ${driver.getDriverLastName()}</option>

@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @Builder
 @Entity(name = "shipment")
 public class Shipment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer shipmentId;
