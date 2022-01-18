@@ -91,7 +91,7 @@ public class InquiryWebController {
     }
 
     @PostMapping("/responseInq")
-    @PreAuthorize("hasAnyRole('SUPERVISOR', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPERVISOR')")
     public ModelAndView responseInquiries(@RequestParam String response, String inquiryID, RedirectAttributes redirectAttributes){
         ModelAndView mv = new ModelAndView();
 
@@ -107,6 +107,27 @@ public class InquiryWebController {
         }
 
         mv.setViewName("redirect:/inquires");
+        return mv;
+
+    }
+
+    @PostMapping("/responseInq-admin")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ModelAndView responseInquiriesAdmin(@RequestParam String response, String inquiryID, RedirectAttributes redirectAttributes){
+        ModelAndView mv = new ModelAndView();
+
+        try {
+            InquiryDto inquiryDto = new InquiryDto();
+            inquiryDto.setInquiryId(Integer.parseInt(inquiryID));
+            inquiryDto.setResponse(response);
+
+            inquiryService.addResponse(inquiryDto);
+            redirectAttributes.addFlashAttribute("success", new SimpleMessageDto("Response added Successfully!"));
+        }catch (DeliveritException e){
+            redirectAttributes.addFlashAttribute("error", new APIException(e.getMessage()));
+        }
+
+        mv.setViewName("redirect:/all-inquires");
         return mv;
 
     }

@@ -101,7 +101,59 @@
             </c:forEach>
         </sec:authorize>
 
-        <sec:authorize access="hasAnyRole('ADMIN','SUPERVISOR')">
+        <sec:authorize access="hasRole('SUPERVISOR')">
+            <c:forEach var="inquiry" items="${inquiryList}">
+                <c:url value="#" var="url">
+                    <c:param name="inquiryId" value="${inquiry.getInquiryId()}"/>
+                </c:url>
+                <div class="col">
+
+
+                    <div class="mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong>Inquiry ID #${inquiry.getInquiryId()}</strong>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title" style="text-align: left">From : ${inquiry.getUserId()}</h6>
+                                <h6 class="card-title" style="text-align: left">ShipmentId
+                                    : ${inquiry.getShipmentId()}</h6>
+                                <div class="alert alert-success" role="alert">
+
+                                    <h6 class="card-title" style="text-align: left">Message :</h6>
+                                        ${inquiry.getDescription()}
+                                </div>
+
+                                    <%--                            <div class="alert alert-primary" role="alert">--%>
+                                    <%--                                <h6 class="card-title" style="text-align: left">Response :</h6>--%>
+                                    <%--                                A simple success alert—check it out!--%>
+                                    <%--                                    &lt;%&ndash;                                <h6 class="card-title text-muted"> Waiting for response.. </h6>&ndash;%&gt;--%>
+                                    <%--                            </div>--%>
+
+
+                                <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal${inquiry.getInquiryId()}">
+                                    Response now
+                                </button>
+
+                            </div>
+                            <div class="card-footer text-muted text-center">
+                                Created on ${inquiry.getCreatedAt()}
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <%@ include file="modals/responseInquiry.jsp" %>
+                </div>
+
+            </c:forEach>
+
+
+        </sec:authorize>
+
+
+        <sec:authorize access="hasRole('ADMIN')">
             <c:forEach var="inquiry" items="${inquiryList}">
                 <c:url value="#" var="url">
                     <c:param name="inquiryId" value="${inquiry.getInquiryId()}"/>
@@ -157,6 +209,9 @@
 
 
 </body>
-
+<!--Footer-->
+<div style="margin-top: 490px">
+    <%@ include file="utils/footer.jsp" %>
+</div>
 
 </html>

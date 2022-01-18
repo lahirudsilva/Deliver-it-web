@@ -71,11 +71,25 @@ public class InquiryController {
     @PostMapping("/sendInquiryResponse")
     @PreAuthorize("hasAnyRole('SUPERVISOR', 'ADMIN')")
     public ResponseEntity<Object> sendResponse(@RequestBody InquiryDto dto){
+
+
         try {
             Inquiry result = inquiryService.addResponse(dto);;
             return new ResponseEntity<>(HttpStatus.CREATED);
 
         } catch (DeliveritException e) {
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/makeInquiry")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Object> makeInquiry(@RequestBody InquiryDto dto){
+        System.out.println("sdsdsddddsdsd"+dto);
+        try{
+            Inquiry result = inquiryService.addInquiries(dto);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch (DeliveritException e){
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
