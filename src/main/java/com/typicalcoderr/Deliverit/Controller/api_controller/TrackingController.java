@@ -4,16 +4,16 @@ import com.typicalcoderr.Deliverit.Repository.ShipmentRepository;
 import com.typicalcoderr.Deliverit.Service.DriverService;
 import com.typicalcoderr.Deliverit.Service.TrackingService;
 import com.typicalcoderr.Deliverit.dto.SimpleMessageDto;
+import com.typicalcoderr.Deliverit.dto.TrackingDto;
 import com.typicalcoderr.Deliverit.exceptions.APIException;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +28,6 @@ public class TrackingController {
 
     private TrackingService trackingService;
     private DriverService driverService;
-    private ShipmentRepository shipmentRepository;
 
     @PreAuthorize("hasRole('DRIVER')")
     @PostMapping("/confirmPickupDelivery/{shipmentId}")
@@ -69,4 +68,49 @@ public class TrackingController {
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/getAllTracking")
+    public ResponseEntity<Object> getTrackingShipments(){
+        try{
+            List<TrackingDto> dto = trackingService.getAllTrackingShipments();
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+
+
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('SUPERVISOR')")
+    @GetMapping("/getAllOnGoingShipments")
+    public ResponseEntity<Object> getAllOnGoingShipments(){
+        try{
+
+            List<TrackingDto> dto = trackingService.getAllOnGoingTrackingShipments();
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+
+
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/getAllOnGoingShipmentsForAdmin")
+    public ResponseEntity<Object> getAllOnGoingShipmentsForAdmin(){
+        try{
+
+            List<TrackingDto> dto = trackingService.getAllOnGoingShipmentsForAdmin();
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+
+
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+
 }

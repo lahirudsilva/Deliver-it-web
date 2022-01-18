@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface TrackingRepository extends JpaRepository<Tracking,Integer> {
     Tracking findTrackingsByShipment(Shipment shipment);
     List <Tracking> findTrackingsByDriverDetails_DriverId(String driverId);
+    List <Tracking> findTrackingsByDriverDetails_DriverIdAndShipmentStatusIsNotLike(String driverId, String shipmentStatus);
     List <Tracking> findTrackingsByShipmentStatusIsLikeAndDriverDetails_DriverId(String status, String driverId);
     Tracking findTrackingsByShipment_ShipmentId(Integer shipmentId);
     List <Tracking> findTrackingsByDriverDetails_DriverIdAndShipmentStatusNotLike(String driverId, String shipmentStatus);
