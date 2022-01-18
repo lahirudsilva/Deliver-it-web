@@ -7,6 +7,7 @@ import com.typicalcoderr.Deliverit.domain.DriverDetails;
 import com.typicalcoderr.Deliverit.domain.User;
 import com.typicalcoderr.Deliverit.domain.Warehouse;
 import com.typicalcoderr.Deliverit.dto.DriverDetailsDto;
+import com.typicalcoderr.Deliverit.dto.UserDto;
 import com.typicalcoderr.Deliverit.dto.WarehouseDto;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,21 @@ public class WarehouseService {
         this.warehouseRepository = warehouseRepository;
         this.userRepository = userRepository;
         this.driverDetailsRepository = driverDetailsRepository;
+    }
+
+    @Transactional
+    public Warehouse addWarehouse(WarehouseDto dto) {
+//        Optional existing = warehouseRepository.findById(dto.getWarehouseNumber());
+//
+//        if(existing.isPresent()){
+//            throw new DeliveritException("Warehouse already exists!");
+//        }
+
+        Warehouse warehouse =new Warehouse();
+        warehouse.setWarehouseNumber(dto.getWarehouseNumber());
+        warehouse.setLocation(dto.getLocation());
+
+        return warehouseRepository.save(warehouse);
     }
 
     public List<WarehouseDto> getAllWarehouses() {
@@ -99,5 +115,46 @@ public class WarehouseService {
         System.out.println(supervisor.getWarehouse().getLocation());
         return supervisor.getWarehouse().getLocation();
 
+    }
+
+    public List<UserDto> getSupervisorsForWarehouse(WarehouseDto dto) throws DeliveritException {
+
+        Warehouse warehouse = warehouseRepository.findById(dto.getWarehouseNumber()).orElseThrow(() -> new DeliveritException("Warehouse not found!"));
+
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
+
+        List<UserDto> list = new ArrayList<>();
+        for (User supervisor : userRepository.findAllByWarehouse_WarehouseNumberAndUserRole(dto.getWarehouseNumber(), "supervisor")) {
+
+            UserDto userDto = new UserDto();
+            userDto.setEmail(supervisor.getEmail());
+            userDto.setFirstName(supervisor.getFirstName());
+            userDto.setLastName(supervisor.getLastName());
+            userDto.setContactNumber(supervisor.getContactNumber());
+            userDto.setJoinedOn(DATE_TIME_FORMATTER.format(supervisor.getJoinedOn()));
+            list.add(userDto);
+        }
+        return list;
+    }
+
+    public  List<UserDto> getWarehouseDrivers(WarehouseDto dto) throws DeliveritException {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
+
+        Warehouse warehouse = warehouseRepository.findById(dto.getWarehouseNumber()).orElseThrow(() -> new DeliveritException("Warehouse not found!"));
+
+
+
+        List<UserDto> list = new ArrayList<>();
+        for (User driver : userRepository.findAllByWarehouse_WarehouseNumberAndUserRole(dto.getWarehouseNumber(), "driver")) {
+
+            UserDto userDto = new UserDto();
+            userDto.setEmail(driver.getEmail());
+            userDto.setFirstName(driver.getFirstName());
+            userDto.setLastName(driver.getLastName());
+            userDto.setContactNumber(driver.getContactNumber());
+            userDto.setJoinedOn(DATE_TIME_FORMATTER.format(driver.getJoinedOn()));
+            list.add(userDto);
+        }
+        return list;
     }
 }
