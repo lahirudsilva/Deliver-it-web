@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class ShipmentServiceTests {
         loggedUser = testUtil.createUserForLogin();
 
         ShipmentDto dto = new ShipmentDto();
-        dto.setReceiverContactNumber("1232341232");
+        dto.setReceiverContactNumber("9232341232");
         dto.setPickupLocation("pickup");
         dto.setDropOffLocation("drop");
         dto.setReceiverEmail("receiver@AddPackage");
@@ -76,7 +77,7 @@ public class ShipmentServiceTests {
 
 
     @Test
-    public void testGetPendingPackageRequests() throws DeliveritException {
+    public void testGetPendingPackageRequestsForAdmin() throws DeliveritException {
 //        createPackageWithUser = testUtil.createPackageRequest();
         List<ShipmentDto> results = shipmentService.getAllPendingRequestsForAdmin();
 
@@ -86,6 +87,43 @@ public class ShipmentServiceTests {
 
         System.out.println("[TEST] Get all pending requests [PASSED]");
     }
+
+    @Test
+    @WithMockUser( username = "createCustomerToBelogin@email.com" , password = "test1", roles = "CUSTOMER")
+    public void testGetRecentShipmentsForCustomer() throws DeliveritException {
+
+        List<ShipmentDto> results = shipmentService.getCustomerRecentShipments();
+
+        boolean isTrue = results.size() > 0;
+
+        assertTrue(isTrue);
+
+        System.out.println("[TEST] Get recent shipments [PASSED]");
+    }
+
+
+
+//    @Test
+//    public void testGetAllOnGoingShipments() throws DeliveritException{
+//        List<ShipmentDto> results = shipmentService.getAllOnGoingShipments();
+//
+//        boolean isTrue = results.size() > 0;
+//
+//        assertTrue(isTrue);
+//
+//        System.out.println("[TEST] Get all pending requests [PASSED]");
+//    }
+//
+//    @Test
+//    public void testGetAllOnGoingShipmentsForWarehouse() throws DeliveritException{
+//        List<ShipmentDto> results = shipmentService.getAllOnGoingShipmentsForWarehouse();
+//
+//        boolean isTrue = results.size() > 0;
+//
+//        assertTrue(isTrue);
+//
+//        System.out.println("[TEST] Get all pending requests [PASSED]");
+//    }
 
 
 }

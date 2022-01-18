@@ -7,10 +7,16 @@ import com.typicalcoderr.Deliverit.domain.User;
 import com.typicalcoderr.Deliverit.dto.DriverDetailsDto;
 import com.typicalcoderr.Deliverit.dto.UserDto;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -25,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Time: 10:39 AM
  */
 @RunWith(SpringRunner.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
 public class DriverServiceTests {
 
@@ -37,29 +44,30 @@ public class DriverServiceTests {
     @Autowired
     private TestUtil testUtil;
 
-    private String warehouseForDriver, driverWithSameID, driverWithSameNIC, driverToBeDeleted;
+    private String warehouseForDriver, driverWithSameID, driverWithSameNIC, driverToBeDeleted, inActiveDriverToBeDeleted;
 
 
     @Test
+    @Order(1)
     public void testAddDriver() throws DeliveritException {
 
         warehouseForDriver = testUtil.createWarehouse();
 
         UserDto userDto = new UserDto();
         DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
-        userDto.setEmail("test@AddDriver");
+        userDto.setEmail("test@AddDriver.com");
         userDto.setFirstName("First");
         userDto.setLastName("Last");
         userDto.setCity("testCity");
         userDto.setUserRole("driver");
-        userDto.setContactNumber("1231231232");
+        userDto.setContactNumber("0777788737");
         userDto.setWarehouseNumber(warehouseForDriver);
-        userDto.setPassword("test");
+        userDto.setPassword("test1");
 
         driverDetailsDto.setDriverId("TEST_ID");
         driverDetailsDto.setNIC("098745234v");
         driverDetailsDto.setVehicleNumber("VPO-1234");
-        driverDetailsDto.setDriverEmail("test@AddDriver");
+        driverDetailsDto.setDriverEmail("test@AddDriver.com");
 
 
         UserDto result = userService.registerUser(userDto);
@@ -74,25 +82,26 @@ public class DriverServiceTests {
     }
 
     @Test
+    @Order(2)
     public void testAddDriverWithExistingDriverID() throws DeliveritException {
         driverWithSameID = testUtil.createDriverWithSameID();
         warehouseForDriver = testUtil.createWarehouse();
 
         UserDto userDto = new UserDto();
         DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
-        userDto.setEmail("testAddDriverWithExistingID@AddDriver");
+        userDto.setEmail("testAddDriverWithExistingID@AddDriver.com");
         userDto.setFirstName("First");
         userDto.setLastName("Last");
         userDto.setCity("testCity");
         userDto.setUserRole("driver");
-        userDto.setContactNumber("1231231232");
+        userDto.setContactNumber("0777767737");
         userDto.setWarehouseNumber(warehouseForDriver);
-        userDto.setPassword("test");
+        userDto.setPassword("test1");
 
         driverDetailsDto.setDriverId(driverWithSameID);
         driverDetailsDto.setNIC("993345234v");
         driverDetailsDto.setVehicleNumber("WER-1114");
-        driverDetailsDto.setDriverEmail("testAddDriverWithExistingID@AddDriver");
+        driverDetailsDto.setDriverEmail("testAddDriverWithExistingID@AddDriver.com");
         System.out.println(driverWithSameID);
         boolean isTrue = false;
         userService.registerUser(userDto);
@@ -114,25 +123,26 @@ public class DriverServiceTests {
 
 
     @Test
+    @Order(3)
     public void testAddDriverWithExistingNIC() throws DeliveritException {
         driverWithSameNIC = testUtil.createDriverWithSameNIC();
         warehouseForDriver = testUtil.createWarehouse();
 
         UserDto userDto = new UserDto();
         DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
-        userDto.setEmail("testAddDriverWithExistingNIC@AddDriver");
+        userDto.setEmail("testAddDriverWithExistingNIC@AddDriver.com");
         userDto.setFirstName("First");
         userDto.setLastName("Last");
         userDto.setCity("testCity");
         userDto.setUserRole("driver");
-        userDto.setContactNumber("1231231232");
+        userDto.setContactNumber("0777733737");
         userDto.setWarehouseNumber(warehouseForDriver);
-        userDto.setPassword("test");
+        userDto.setPassword("test1");
 
         driverDetailsDto.setDriverId("testAddDriverWithExistingNIC_ID");
         driverDetailsDto.setNIC(driverWithSameNIC);
         driverDetailsDto.setVehicleNumber("AKH-1114");
-        driverDetailsDto.setDriverEmail("testAddDriverWithExistingNIC@AddDriver");
+        driverDetailsDto.setDriverEmail("testAddDriverWithExistingNIC@AddDriver.com");
 
         boolean isTrue = false;
         userService.registerUser(userDto);
@@ -153,6 +163,7 @@ public class DriverServiceTests {
     }
 
     @Test
+    @Order(4)
     public void testGetAllDrivers() throws DeliveritException {
         List<DriverDetailsDto> results = driverService.getAllDrivers();
         System.out.println(results);
@@ -165,18 +176,34 @@ public class DriverServiceTests {
 
     }
 
-
+//    @Test
+//    @Order(5)
+//    @WithMockUser(username = "testAddDriverWithExistingID@AddDriver.com" , password = "test1", roles = "DRIVER")
+//    public void TestGetDriverDetails() throws DeliveritException{
+//        DriverDetailsDto results = driverService.getDriverDetails();
+//        System.out.println(results);
+//
+//        assertNotNull(results);
+//
+//        System.out.println("[TEST] Get driver details [PASSED]");
+//    }
 
 
     @Test
-    public void testDeleteCustomer() throws DeliveritException {
+    @Order(6)
+    public void testDeleteDriverAssignedForDeliveries() throws DeliveritException {
         driverToBeDeleted = testUtil.createDriverToBeDeleted();
+        boolean isTrue = false;
+        try {
+            driverService.removeDriver(driverToBeDeleted);
+        }catch (DeliveritException e){
+            if (e.getMessage().equals("Deletion failed! driver has been assigned for deliveries")) isTrue = true;
+        }
 
-        driverService.removeDriver(driverToBeDeleted);
 
         List<DriverDetailsDto> results = driverService.getAllDrivers();
 
-        boolean isTrue = true;
+
 
         for (DriverDetailsDto dto : results) {
             if (dto.getDriverId() == driverToBeDeleted) {
@@ -187,9 +214,30 @@ public class DriverServiceTests {
 
         assertTrue(isTrue);
 
-        System.out.println("[TEST] Delete driver [PASSED]");
+        System.out.println("[TEST] Attempt to Delete driver who assigned to deliveries [PASSED]");
     }
 
+    @Test
+    @Order(7)
+    public void testDeleteDriver() throws DeliveritException{
+        inActiveDriverToBeDeleted = testUtil.createInActiveDriverToBeDeleted();
 
+        driverService.removeDriver(inActiveDriverToBeDeleted);
+
+        List<DriverDetailsDto> results = driverService.getAllDrivers();
+
+        boolean isTrue = true;
+
+        for (DriverDetailsDto dto : results) {
+            if (dto.getDriverId() == inActiveDriverToBeDeleted) {
+                isTrue = false;
+                break;
+            }
+        }
+
+        assertTrue(isTrue);
+
+        System.out.println("[TEST] Delete driver [PASSED]");
+    }
 
 }

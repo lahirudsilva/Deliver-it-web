@@ -1,10 +1,7 @@
 package com.typicalcoderr.Deliverit;
 
 import com.typicalcoderr.Deliverit.Service.*;
-import com.typicalcoderr.Deliverit.domain.DriverDetails;
-import com.typicalcoderr.Deliverit.domain.Shipment;
-import com.typicalcoderr.Deliverit.domain.User;
-import com.typicalcoderr.Deliverit.domain.Warehouse;
+import com.typicalcoderr.Deliverit.domain.*;
 import com.typicalcoderr.Deliverit.dto.*;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
 import lombok.AllArgsConstructor;
@@ -39,6 +36,9 @@ public class TestUtil {
     @Autowired
     private final DriverService driverService;
 
+    @Autowired
+    private final TrackingService trackingService;
+
     public String createCustomerToBeDeleted() throws DeliveritException{
         UserDto customerDto = new UserDto();
 
@@ -46,8 +46,8 @@ public class TestUtil {
         customerDto.setFirstName("First");
         customerDto.setLastName("Last");
         customerDto.setCity("testCity");
-        customerDto.setContactNumber("1231231232");
-        customerDto.setPassword("test");
+        customerDto.setContactNumber("0771177737");
+        customerDto.setPassword("test1");
 
         return customerService.registerCustomer(customerDto).getEmail();
 
@@ -61,13 +61,13 @@ public class TestUtil {
         customerDto.setFirstName("First");
         customerDto.setLastName("Last");
         customerDto.setCity("testCity");
-        customerDto.setContactNumber("1231231232");
-        customerDto.setPassword("test");
+        customerDto.setContactNumber("0777744437");
+        customerDto.setPassword("test1");
 
         customerService.registerCustomer(customerDto);
 
         loginRequest.setEmail("createCustomerToBelogin@email.com");
-        loginRequest.setPassword("test");
+        loginRequest.setPassword("test1");
         return  loginRequest;
 
 
@@ -75,14 +75,42 @@ public class TestUtil {
 
     public Shipment createPackageRequest() throws DeliveritException {
         UserDto customerDto = new UserDto();
-        LoginRequest loginRequest = new LoginRequest();
 
-        customerDto.setEmail("createUserForLoginViewRequests@email.com");
+        customerDto.setEmail("createUserForViewRequests@email.com");
         customerDto.setFirstName("First");
         customerDto.setLastName("Last");
         customerDto.setCity("testCity");
-        customerDto.setContactNumber("1231231232");
-        customerDto.setPassword("test");
+        customerDto.setContactNumber("0777367737");
+        customerDto.setPassword("test1");
+
+        customerService.registerCustomer(customerDto);
+
+        ShipmentDto dto = new ShipmentDto();
+        dto.setReceiverContactNumber("1232341232");
+        dto.setPickupLocation("pickup");
+        dto.setDropOffLocation("drop");
+        dto.setReceiverEmail("receiver@AddPackage");
+        dto.setSize("test");
+        dto.setWeight(23.00);
+        dto.setEstimatedPrice(100.00);
+        dto.setDescription("this is description");
+        dto.setWarehouseNumber(createWarehouse());
+        dto.setReceiverName("receiver");
+
+        return  shipmentService.addShipment(dto);
+    }
+
+
+    public Shipment createPackageRequestForInquiry() throws DeliveritException {
+        UserDto customerDto = new UserDto();
+        LoginRequest loginRequest = new LoginRequest();
+
+        customerDto.setEmail("createPackageRequestForInquiry@email.com");
+        customerDto.setFirstName("First");
+        customerDto.setLastName("Last");
+        customerDto.setCity("testCity");
+        customerDto.setContactNumber("0777977737");
+        customerDto.setPassword("test1");
 
         customerService.registerCustomer(customerDto);
 
@@ -103,15 +131,13 @@ public class TestUtil {
 
 
 
-        loginRequest.setEmail("createUserForLoginViewRequests@email.com");
-        loginRequest.setPassword("test");
+        loginRequest.setEmail("createPackageRequestForInquiry@email.com");
+        loginRequest.setPassword("test1");
         authService.login(loginRequest);
         return  shipmentService.addShipment(dto);
 
 
     }
-
-
 
 
     public String createCustomerWithSameEmail() throws DeliveritException{
@@ -120,8 +146,8 @@ public class TestUtil {
         dto.setFirstName("First");
         dto.setLastName("Last");
         dto.setCity("testCity");
-        dto.setContactNumber("1231231232");
-        dto.setPassword("test");
+        dto.setContactNumber("0777755737");
+        dto.setPassword("test1");
 
         return customerService.registerCustomer(dto).getEmail();
 
@@ -140,19 +166,19 @@ public class TestUtil {
     public String createDriverWithSameID() throws DeliveritException{
         UserDto userDto = new UserDto();
         DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
-        userDto.setEmail("createDriverWithSameID@email");
+        userDto.setEmail("createDriverWithSameID@email.com");
         userDto.setFirstName("First");
         userDto.setLastName("Last");
         userDto.setCity("testCity");
         userDto.setUserRole("driver");
-        userDto.setContactNumber("1231231232");
+        userDto.setContactNumber("0777775537");
         userDto.setWarehouseNumber(createWarehouse());
-        userDto.setPassword("test");
+        userDto.setPassword("test1");
 
         driverDetailsDto.setDriverId("createDriverWithSameID");
         driverDetailsDto.setNIC("123345234v");
         driverDetailsDto.setVehicleNumber("VBN-1234");
-        driverDetailsDto.setDriverEmail("createDriverWithSameID@email");
+        driverDetailsDto.setDriverEmail("createDriverWithSameID@email.com");
 
 
         UserDto result = userService.registerUser(userDto);
@@ -162,19 +188,19 @@ public class TestUtil {
     public String createDriverWithSameNIC() throws DeliveritException{
         UserDto userDto = new UserDto();
         DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
-        userDto.setEmail("createDriverWithSameNIC@email");
+        userDto.setEmail("createDriverWithSameNIC@email.com");
         userDto.setFirstName("First");
         userDto.setLastName("Last");
         userDto.setCity("testCity");
         userDto.setUserRole("driver");
-        userDto.setContactNumber("1231231232");
+        userDto.setContactNumber("0777637737");
         userDto.setWarehouseNumber(createWarehouse());
-        userDto.setPassword("test");
+        userDto.setPassword("test1");
 
         driverDetailsDto.setDriverId("createDriverWithSameNIC");
         driverDetailsDto.setNIC("111100002v");
         driverDetailsDto.setVehicleNumber("KLU-1234");
-        driverDetailsDto.setDriverEmail("createDriverWithSameNIC@email");
+        driverDetailsDto.setDriverEmail("createDriverWithSameNIC@email.com");
 
 
         UserDto result = userService.registerUser(userDto);
@@ -185,23 +211,106 @@ public class TestUtil {
         UserDto driverDto = new UserDto();
         DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
 
-        driverDto.setEmail("createDriverToBeDeleted@email");
+        driverDto.setEmail("createDriverToBeDeleted@email.com");
         driverDto.setFirstName("First");
         driverDto.setLastName("Last");
         driverDto.setCity("testCity");
-        driverDto.setContactNumber("1231231232");
+        driverDto.setContactNumber("0777727737");
         driverDto.setUserRole("driver");
         driverDto.setWarehouseNumber(createWarehouse());
-        driverDto.setPassword("test");
+        driverDto.setPassword("test1");
 
         driverDetailsDto.setDriverId("createDriverToBeDeleted");
         driverDetailsDto.setNIC("193840023v");
         driverDetailsDto.setVehicleNumber("FFU-1234");
-        driverDetailsDto.setDriverEmail("createDriverToBeDeleted@email");
+        driverDetailsDto.setDriverEmail("createDriverToBeDeleted@email.com");
 
          userService.registerUser(driverDto);
         return driverService.addDriverDetails(driverDetailsDto).getDriverId();
 
     }
+
+    public String createInActiveDriverToBeDeleted() throws DeliveritException{
+        UserDto driverDto = new UserDto();
+        DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
+
+        driverDto.setEmail("inActiveDriverToBeDeleted@email.com");
+        driverDto.setFirstName("First");
+        driverDto.setLastName("Last");
+        driverDto.setCity("testCity");
+        driverDto.setContactNumber("0777725437");
+        driverDto.setUserRole("driver");
+        driverDto.setWarehouseNumber(createWarehouse());
+        driverDto.setPassword("test1");
+
+        driverDetailsDto.setDriverId("inActiveDriverToBeDeleted");
+        driverDetailsDto.setNIC("553840023v");
+        driverDetailsDto.setVehicleNumber("LLU-1234");
+        driverDetailsDto.setDriverEmail("inActiveDriverToBeDeleted@email.com");
+
+        userService.registerUser(driverDto);
+        return driverService.addDriverDetails(driverDetailsDto).getDriverId();
+
+    }
+
+    public String createDriverForTracking() throws DeliveritException{
+        UserDto driverDto = new UserDto();
+        DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
+
+        driverDto.setEmail("createDriverForTracking@email.com");
+        driverDto.setFirstName("First");
+        driverDto.setLastName("Last");
+        driverDto.setCity("testCity");
+        driverDto.setContactNumber("0777887737");
+        driverDto.setUserRole("driver");
+        driverDto.setWarehouseNumber(createWarehouse());
+        driverDto.setPassword("test1");
+
+        driverDetailsDto.setDriverId("createDriverToBeDeleted");
+        driverDetailsDto.setNIC("193840023v");
+        driverDetailsDto.setVehicleNumber("FFU-1234");
+        driverDetailsDto.setDriverEmail("createDriverForTracking@email.com");
+
+        userService.registerUser(driverDto);
+
+        return driverService.addDriverDetails(driverDetailsDto).getDriverId();
+
+    }
+
+//    public LoginRequest createLoggedInDriver() throws DeliveritException {
+//        LoginRequest loginRequest = new LoginRequest();
+//        UserDto driverDto = new UserDto();
+//        DriverDetailsDto driverDetailsDto = new DriverDetailsDto();
+//
+//        driverDto.setEmail("createLoggedInDriver@email");
+//        driverDto.setFirstName("First");
+//        driverDto.setLastName("Last");
+//        driverDto.setCity("testCity");
+//        driverDto.setContactNumber("3537869632");
+//        driverDto.setUserRole("driver");
+//        driverDto.setWarehouseNumber(createWarehouse());
+//        driverDto.setPassword("test");
+//
+//        driverDetailsDto.setDriverId("createLoggedInDriver");
+//        driverDetailsDto.setNIC("193840223v");
+//        driverDetailsDto.setVehicleNumber("OOP-1234");
+//        driverDetailsDto.setDriverEmail("createLoggedInDriver@email");
+//
+//        userService.registerUser(driverDto);
+//      String driverId =    driverService.addDriverDetails(driverDetailsDto).getDriverId();
+//
+//        TrackingDto dto = new TrackingDto();
+//        dto.setDriverId(driverId);
+//        dto.setShipmentId(createPackageRequest().getShipmentId());
+//
+//
+//        Tracking result = trackingService.addTracking(dto);
+//
+//        loginRequest.setEmail("createLoggedInDriver@email");
+//        loginRequest.setPassword("test");
+//        return  loginRequest;
+//
+//
+//    }
 
 }

@@ -4,6 +4,8 @@ import com.typicalcoderr.Deliverit.Service.CustomerService;
 import com.typicalcoderr.Deliverit.domain.User;
 import com.typicalcoderr.Deliverit.dto.UserDto;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,9 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Time: 7:48 PM
  */
 
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CustomerServiceTests{
 
     @Autowired
@@ -35,6 +39,8 @@ public class CustomerServiceTests{
 
     @Autowired
     private TestUtil testUtil;
+
+
 
     private String customerToBeDeleted, customerWithSameEmail;
 
@@ -53,12 +59,12 @@ public class CustomerServiceTests{
     @Test
     public void testRegisterCustomer() throws DeliveritException{
         UserDto dto = new UserDto();
-        dto.setEmail("test@AddCustomer");
+        dto.setEmail("test@AddCustomer.com");
         dto.setFirstName("First");
         dto.setLastName("Last");
         dto.setCity("testCity");
-        dto.setContactNumber("1231231232");
-        dto.setPassword("test");
+        dto.setContactNumber("0777777737");
+        dto.setPassword("Tesstsssss");
 
 
         User result = customerService.registerCustomer(dto);
@@ -82,8 +88,8 @@ public class CustomerServiceTests{
         customerDto.setFirstName("First");
         customerDto.setLastName("Last");
         customerDto.setCity("testCity");
-        customerDto.setContactNumber("1231231232");
-        customerDto.setPassword("test");
+        customerDto.setContactNumber("0777737737");
+        customerDto.setPassword("tests");
 
         boolean isTrue = false;
 
@@ -109,7 +115,7 @@ public class CustomerServiceTests{
 
         assertTrue(isTrue);
 
-        System.out.println("[TEST] Get all students [PASSED]");
+        System.out.println("[TEST] Get all customers [PASSED]");
 
     }
 
@@ -132,7 +138,7 @@ public class CustomerServiceTests{
 
         assertTrue(isTrue);
 
-        System.out.println("[TEST] Delete student [PASSED]");
+        System.out.println("[TEST] Delete Customer [PASSED]");
     }
 
 }
