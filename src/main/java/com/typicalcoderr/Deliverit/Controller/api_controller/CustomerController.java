@@ -1,5 +1,6 @@
 package com.typicalcoderr.Deliverit.Controller.api_controller;
 
+import com.typicalcoderr.Deliverit.Service.CustomerService;
 import com.typicalcoderr.Deliverit.Service.ShipmentService;
 import com.typicalcoderr.Deliverit.Service.UserService;
 import com.typicalcoderr.Deliverit.dto.ShipmentDto;
@@ -27,12 +28,13 @@ public class CustomerController {
 
     private final UserService userService;
     private final ShipmentService shipmentService;
+    private final CustomerService customerService;
 
     @PostMapping("/register")
     public ResponseEntity<Object> addCustomer(@RequestBody UserDto dto) throws DeliveritException {
 
         try {
-            userService.registerUser(dto);
+            customerService.registerCustomer(dto);
             return new ResponseEntity<>("User Successfully Registered! Please login.", HttpStatus.CREATED);
 
         } catch (DeliveritException e) {
@@ -52,6 +54,31 @@ public class CustomerController {
             return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/getAllCompletedShipment")
+    public ResponseEntity<Object> getAllCompletedShipment(){
+        try{
+            List<ShipmentDto>  dto=  shipmentService.getCustomerPastShipments();
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<Object> getAllUsers(){
+        try{
+            List<UserDto>  dto=  customerService.getAllCustomers();
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+
+        }catch (DeliveritException e){
+            return new ResponseEntity<>(new APIException(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 
 

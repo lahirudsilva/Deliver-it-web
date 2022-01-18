@@ -12,6 +12,9 @@ import java.util.List;
 public interface ShipmentRepository extends JpaRepository<Shipment,Integer> {
     List<Shipment> findAllByStatusIsLikeOrderByCreatedAtDesc(String status);
     List<Shipment> findAllByUserIsOrderByCreatedAtDesc(User user);
+//    List<Shipment> findAllByUserIsAAndStatusIsOrderByCreatedAtDesc(User user, String shipmentStatus);
     List<Shipment> findAllByStatusAndWarehouseWarehouseNumberLikeOrderByCreatedAtDesc(String status, String warehouseNumber);
+    List<Shipment> findAllByStatusIsNotLikeOrderByCreatedAtDesc(String shipmentStatus);
+    List<Shipment> findAllByStatusIsLikeAndWarehouseWarehouseNumberOrderByCreatedAtDesc(String shipmentStatus, String warehouseNumber);
 
 }

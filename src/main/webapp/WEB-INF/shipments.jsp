@@ -1,6 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ page import="com.typicalcoderr.Deliverit.dto.ShipmentDto" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,6 +46,21 @@
 
         <div class="row">
             <sec:authorize access="hasRole('SUPERVISOR')">
+                <%
+                    List<ShipmentDto> wship = new ArrayList<>();
+                    try {
+                        wship = (List<ShipmentDto>) request.getAttribute("shipmentListForWarehouse");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (wship != null && wship.size() <= 0) {
+                %>
+                <div class="alert alert-secondary" role="alert">
+                    No on going shipment!
+                </div>
+                <%
+                } else {
+                %>
                 <c:forEach var="shipment" items="${shipmentListForWarehouse}">
 
                     <c:url value="#" var="url">
@@ -54,34 +72,64 @@
                                 <strong>Shipment ID #${shipment.getShipmentId()}</strong>
                                 <span
                                         class="badge rounded-pill bg-danger"
-                                        style="margin-left: 120px">${shipment.getEstimatedPrice()} LKR</span>
+                                        style="margin-left: 105px">${shipment.getEstimatedPrice()} LKR</span>
                             </div>
                             <div class="card-body text-center">
-                                <h6 class="card-title">Sender : ${shipment.getSenderFirstName()} ${shipment.getSenderLastName()}</h6>
-                                <span class="badge bg-info text-dark" class="card-title"> Pickup : ${shipment.getPickupLocation()}</span>
-                                <p class="card-text"> </p>
+                                <h6 class="card-title">Sender
+                                    : ${shipment.getSenderFirstName()} ${shipment.getSenderLastName()}</h6>
+                                <span class="badge bg-info text-dark"
+                                      class="card-title"> Pickup : ${shipment.getPickupLocation()}</span>
+                                <p class="card-text"></p>
                                 <hr/>
                                 <h6 class="card-title">Receiver : ${shipment.getReceiverName()}</h6>
-                                <span class="badge bg-warning text-dark" class="card-title"> Drop : ${shipment.getDropOffLocation()}</span>
+                                <span class="badge bg-warning text-dark"
+                                      class="card-title"> Drop : ${shipment.getDropOffLocation()}</span>
 
                                 <hr/>
-                                <form method="GET" action="/track-package">
-                                    <input hidden id="editIdInput${shipment.getShipmentId()}" name="shipmentId"
-                                           value="${shipment.getShipmentId()}"/>
-                                    <button type="submit"  class="btn btn-outline-dark">Track here</button>
-                                </form>
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                                data-bs-target="#getInfo${shipment.getShipmentId()}"
+                                                style="width: 150px"><i class="fas fa-info-circle"></i> Package info
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <form method="GET" action="/track-package">
+                                            <input hidden id="editIdInput${shipment.getShipmentId()}" name="shipmentId"
+                                                   value="${shipment.getShipmentId()}"/>
+                                            <button type="submit" class="btn btn-outline-dark">Track here</button>
+                                        </form>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="card-footer text-muted text-center">
                                 Created on ${shipment.getCreatedAt()}
                             </div>
                         </div>
                     </div>
-
+                    <%@ include file="modals/packageInfo.jsp" %>
                 </c:forEach>
+                <% } %>
             </sec:authorize>
 
 
             <sec:authorize access="hasRole('ADMIN')">
+                <%
+                    List<ShipmentDto> ship = new ArrayList<>();
+                    try {
+                        ship = (List<ShipmentDto>) request.getAttribute("shipmentList");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (ship != null && ship.size() <= 0) {
+                %>
+                <div class="alert alert-secondary" role="alert">
+                    No on going shipment!
+                </div>
+                <%
+                } else {
+                %>
                 <c:forEach var="shipment" items="${shipmentList}">
 
                     <c:url value="#" var="url">
@@ -93,30 +141,65 @@
                                 <strong>Shipment ID #${shipment.getShipmentId()}</strong>
                                 <span
                                         class="badge rounded-pill bg-success"
-                                        style="margin-left: 120px">${shipment.getWarehouseLocation()}</span>
+                                        style="margin-left: 100px">${shipment.getWarehouseLocation()}</span>
                             </div>
                             <div class="card-body text-center">
-                                <h6 class="card-title">Sender : ${shipment.getSenderFirstName()} ${shipment.getSenderLastName()}</h6>
-                                <span class="badge bg-info text-dark" class="card-title"> Pickup : ${shipment.getPickupLocation()}</span>
-                                <p class="card-text"> </p>
+                                <h6 class="card-title">Sender
+                                    : ${shipment.getSenderFirstName()} ${shipment.getSenderLastName()}</h6>
+                                <span class="badge bg-info text-dark"
+                                      class="card-title"> Pickup : ${shipment.getPickupLocation()}</span>
+                                <p class="card-text"></p>
                                 <hr/>
                                 <h6 class="card-title">Receiver : ${shipment.getReceiverName()}</h6>
-                                <span class="badge bg-warning text-dark" class="card-title"> Drop : ${shipment.getDropOffLocation()}</span>
+                                <span class="badge bg-warning text-dark"
+                                      class="card-title"> Drop : ${shipment.getDropOffLocation()}</span>
 
                                 <hr/>
-                                <form method="GET" action="/track-package">
-                                    <input hidden id="editIdInput${shipment.getShipmentId()}" name="shipmentId"
-                                           value="${shipment.getShipmentId()}"/>
-                                    <button type="submit"  class="btn btn-outline-dark">Track here</button>
-                                </form>
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-outline-dark" data-bs-toggle="modal"
+                                                data-bs-target="#getInfo${shipment.getShipmentId()}"
+                                                style="width: 150px"><i class="fas fa-info-circle"></i> Package info
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <c:if test="${shipment.getStatus() == 'pending'}">
+                                            <button type="button" class="btn btn-outline-warning" disabled
+                                                    style="width: 150px">Pending
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${shipment.getStatus() == 'rejected'}">
+                                            <button type="button" class="btn btn-outline-danger" disabled
+                                                    style="width: 150px">Rejected
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${shipment.getStatus() == 'canceled'}">
+                                            <button type="button" class="btn btn-outline-secondary" disabled
+                                                    style="width: 150px">Canceled
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${shipment.getStatus() == 'accepted'}">
+                                            <form method="GET" action="/track-package">
+                                                <input hidden id="editIdInput${shipment.getShipmentId()}"
+                                                       name="shipmentId"
+                                                       value="${shipment.getShipmentId()}"/>
+                                                <button type="submit" class="btn btn-outline-dark" style="width: 150px">
+                                                    Track here
+                                                </button>
+                                            </form>
+                                        </c:if>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="card-footer text-muted text-center">
-                               Created on ${shipment.getCreatedAt()}
+                                Created on ${shipment.getCreatedAt()}
                             </div>
                         </div>
                     </div>
-
+                    <%@ include file="modals/packageInfo.jsp" %>
                 </c:forEach>
+                <% } %>
             </sec:authorize>
 
         </div>
@@ -127,7 +210,7 @@
 </body>
 
 <!--Footer-->
-<div style="margin-top: 450px">
+<div style="margin-top: 490px">
     <%@ include file="utils/footer.jsp" %>
 </div>
 

@@ -41,6 +41,8 @@ public class ShipmentDto {
     private String receiverName;
     private String senderFirstName;
     private String senderLastName;
+    private String driverID;
+    private String driverEmail;
     private User user;
 
     //mobile

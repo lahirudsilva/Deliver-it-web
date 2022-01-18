@@ -6,13 +6,16 @@ import com.typicalcoderr.Deliverit.domain.Shipment;
 import com.typicalcoderr.Deliverit.domain.User;
 import com.typicalcoderr.Deliverit.dto.ShipmentDto;
 import com.typicalcoderr.Deliverit.dto.UserDto;
+import com.typicalcoderr.Deliverit.enums.ShipmentStatusType;
 import com.typicalcoderr.Deliverit.exceptions.DeliveritException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -43,10 +46,13 @@ public class CustomerService {
     @Transactional
     public User registerCustomer(UserDto dto) throws DeliveritException {
 
-        Optional existing = userRepository.findUserByEmail(dto.getEmail());
+        Optional existing = userRepository.findById(dto.getEmail());
+        Optional existingContact = userRepository.findUserByContactNumber(dto.getContactNumber());
 
         if(existing.isPresent()){
             throw new DeliveritException("Email already exists!");
+        }else if(existingContact.isPresent()){
+            throw new DeliveritException("Contact number already exists!");
         }
 
         User customer = new User();
@@ -57,17 +63,17 @@ public class CustomerService {
         customer.setUserRole("customer");
         customer.setCity(dto.getCity());
         customer.setContactNumber(dto.getContactNumber());
+        customer.setIsVerified(true);
+        customer.setIsBlackListed(false);
         customer.setJoinedOn(Instant.now());
 
         return userRepository.save(customer);
 
-        //Save new user after mapping dto to entity class
-
-
     }
 
 
-    public List<UserDto> getAllCustomers() {
+    @Transactional
+    public List<UserDto> getAllCustomers()  throws DeliveritException{
         DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
 
 
@@ -79,9 +85,13 @@ public class CustomerService {
             dto.setLastName(customer.getLastName());
             dto.setEmail(customer.getEmail());
             dto.setContactNumber("+" +customer.getContactNumber());
+            dto.setCity(customer.getCity());
             dto.setJoinedOn(DATE_TIME_FORMATTER.format(customer.getJoinedOn()));
+            dto.setVerified(customer.getIsVerified());
+            dto.setBlacklisted(customer.getIsBlackListed());
             list.add(dto);
         }
+        System.out.println(list);
         return list;
     }
 
@@ -96,6 +106,39 @@ public class CustomerService {
         for (Shipment shipment : shipmentRepository.findAllByUserIsOrderByCreatedAtDesc(user)){
             ShipmentDto dto = new ShipmentDto();
             dto.setShipmentId(shipment.getShipmentId());
+            dto.setEstimatedPrice(shipment.getEstimatedPrice());
+            dto.setPickupLocation(shipment.getPickupLocation());
+            dto.setDropOffLocation(shipment.getDropOffLocation());
+            dto.setReceiverName(shipment.getReceiverName());
+            dto.setPickUpDate(shipment.getPickUpDate());
+            dto.setDropOffDate(shipment.getDropOffDate());
+            dto.setWarehouseLocation(shipment.getWarehouse().getLocation());
+            dto.setDescription(shipment.getDescription());
+            dto.setSize(shipment.getSize());
+            dto.setWeight(shipment.getWeight());
+            dto.setCreatedAt(DATE_TIME_FORMATTER.format(shipment.getCreatedAt()));
+            dto.setStatus(shipment.getStatus());
+            list.add(dto);
+        }
+        return list;
+
+
+    }
+
+    public List<ShipmentDto> getMyRecentPackages() throws DeliveritException {
+        DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss a").withZone(ZoneId.systemDefault());
+
+        User user = userRepository.findUserByEmail(getUsername()).orElseThrow(()-> new DeliveritException("user not found!"));
+
+
+
+        List<ShipmentDto>  list = new ArrayList<>();
+        List<ShipmentDto> recent = new ArrayList<>();
+
+        for (Shipment shipment : shipmentRepository.findAllByUserIsOrderByCreatedAtDesc(user)){
+
+            ShipmentDto dto = new ShipmentDto();
+            dto.setShipmentId(shipment.getShipmentId());
             dto.setCreatedAt(DATE_TIME_FORMATTER.format(shipment.getCreatedAt()));
             dto.setPickUpDate(shipment.getPickUpDate());
             dto.setDropOffDate(shipment.getDropOffDate());
@@ -103,8 +146,18 @@ public class CustomerService {
             dto.setWeight(shipment.getWeight());
             dto.setStatus(shipment.getStatus());
             list.add(dto);
+
+
+
         }
-        return list;
+        //Find 10 most recent packages
+        for(int i=0; i<list.size(); i++) {
+            if(i==10) break;
+            recent.add(list.get(i));
+        }
+
+
+        return recent;
 
 
     }
@@ -138,5 +191,37 @@ public class CustomerService {
         return dto;
 
 
+    }
+
+    public User setVerified(String email) throws DeliveritException {
+
+        User user = userRepository.findUserByEmail(email).orElseThrow(()-> new DeliveritException("User not found!"));
+
+        user.setIsBlackListed(false);
+        return userRepository.save(user);
+
+
+
+
+    }
+
+    public User setBlacklisted(String email) throws DeliveritException {
+
+        User user = userRepository.findUserByEmail(email).orElseThrow(()-> new DeliveritException("User not found!"));
+        System.out.println(user);
+        user.setIsBlackListed(true);
+        return userRepository.save(user);
+    }
+
+    public void removeCustomer(String email) throws DeliveritException {
+        User customer = userRepository.findUserByEmail(email).orElseThrow(()-> new DeliveritException("User not found"));
+
+        List <Shipment> shipments = shipmentRepository.findAllByUserIsOrderByCreatedAtDesc(customer);
+
+        if(customer.getUserRole().equals("admin")) throw new DeliveritException("You cannot delete an administrator");
+
+        if(shipments.size()>0) throw  new DeliveritException("Deletion failed! customer has on going shipments!");
+
+        userRepository.deleteById(email);
     }
 }
